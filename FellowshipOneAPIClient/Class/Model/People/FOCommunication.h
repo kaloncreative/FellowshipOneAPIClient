@@ -84,8 +84,11 @@
 @property (nonatomic, copy) NSString *cleansedValue;
 @property (nonatomic, readonly) NSString *urlScheme;
 
-/* Gets all the communications associated with a specific person id -- Thie method is performed synchronously -- */
+/* Gets all the communications associated with a specific person id -- This method is performed synchronously -- */
 + (NSArray *) getByPersonID: (NSInteger) personID;
+
+/* Gets all the communications associated with a specific household id -- This method is performed synchronously -- */
++ (NSArray *) getByHouseholdID: (NSInteger) householdID;
 
 /* Gets an FT Communication from the F1 API based on the provided address id -- This method is performed synchronously -- */
 + (FOCommunication *) getByCommunicationID: (NSInteger) communicationID;

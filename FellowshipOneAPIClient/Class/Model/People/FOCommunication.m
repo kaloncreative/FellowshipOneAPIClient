@@ -132,6 +132,32 @@
 	return returnCommunications;
 }
 
++ (NSArray *) getByHouseholdID: (NSInteger) householdID {
+	
+	NSMutableArray *returnCommunications = [[[NSMutableArray alloc] init] autorelease];
+	NSString *theUrl = [NSString stringWithFormat:@"Households/%d/Communications.json", householdID];
+	
+	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+	FTOAuthResult *results = [oauth callSyncFTAPIWithURLSuffix:theUrl forRealm:FTAPIRealmBase withHTTPMethod:HTTPMethodGET withData:nil];
+	
+	if (results.isSucceed) {
+		
+		NSDictionary *topLevel = [results.returnData objectForKey:@"communications"];
+		if (![topLevel isEqual:[NSNull null]]) {
+			NSArray *communications = [topLevel objectForKey:@"communication"];
+			
+			for (NSDictionary *currentCommunication in communications) {
+				[returnCommunications addObject:[FOCommunication populateFromDictionary:currentCommunication]];
+			}
+		}
+	}
+	
+	[results release];
+	[oauth release];
+	
+	return returnCommunications;
+}
+
 + (FOCommunication *) getByCommunicationID: (NSInteger) communicationID {
 	
 	FOCommunication *returnCommunication = [[[FOCommunication alloc] init] autorelease];
