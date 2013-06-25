@@ -159,6 +159,9 @@ typedef enum {
 // pageNumber: the page number the search is for
 + (void) searchForPeople: (FOPersonQO *)qo usingCallback:(void (^)(FOPagedEntity *))pagedResults;
 
+/* Gets all the people associated with a specific household id -- This method is performed synchronously -- */
++ (NSArray *) getByHouseholdID: (NSInteger) householdID;
+
 // Returns a portait image from the F1API specified by the size S, M, or L are the options. -- This method is called asynchronously --
 // @personID :: The ID of the person that the image is for
 // @size :: The size of the image to be returned

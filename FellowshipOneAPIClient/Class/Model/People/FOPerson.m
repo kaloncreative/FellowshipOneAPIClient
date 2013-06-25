@@ -21,6 +21,8 @@
 #import "FOCommunication.h"
 #import "FOPersonQO.h"
 #import "NSString+URLEncoding.h"
+#import "NSObject+serializeToJSON.h"
+#import <objc/runtime.h>
 
 @interface FOPerson (PRIVATE)
 
@@ -409,6 +411,32 @@
     }];
 }
 
++ (NSArray *) getByHouseholdID: (NSInteger) householdID {
+	
+	NSMutableArray *returnPeople = [[[NSMutableArray alloc] init] autorelease];
+	NSString *theUrl = [NSString stringWithFormat:@"Households/%d/People.json", householdID];
+	
+	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+	FTOAuthResult *results = [oauth callSyncFTAPIWithURLSuffix:theUrl forRealm:FTAPIRealmBase withHTTPMethod:HTTPMethodGET withData:nil];
+	
+	if (results.isSucceed) {
+		
+		NSDictionary *topLevel = [results.returnData objectForKey:@"people"];
+		if (![topLevel isEqual:[NSNull null]]) {
+			NSArray *people = [topLevel objectForKey:@"person"];
+			
+			for (NSDictionary *currentPerson in people) {
+				[returnPeople addObject:[FOCommunication populateFromDictionary:currentPerson]];
+			}
+		}
+	}
+	
+	[results release];
+	[oauth release];
+	
+	return returnPeople;
+}
+
 + (void)getImageData: (NSInteger)personID withSize:(NSString *)size usingCallback:(void (^)(NSData *))returnedImage {
     NSString *imageURL = [NSString stringWithFormat:@"People/%d/Images.json?Size=%@", personID, size];
     FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
@@ -428,6 +456,99 @@
     }];
 }
 
+- (void) save {
+	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+	HTTPMethod method = HTTPMethodPOST;
+	
+	NSMutableString *urlSuffix = [NSMutableString stringWithFormat:@"People"];
+	
+	if (myId > 0) {
+		[urlSuffix appendFormat:@"/%d", myId];
+		method = HTTPMethodPUT;
+	}
+	
+	[urlSuffix appendString:@".json"];
+    
+	
+	FTOAuthResult *ftOAuthResult = [oauth callSyncFTAPIWithURLSuffix:urlSuffix
+															forRealm:FTAPIRealmBase
+													  withHTTPMethod:method
+															withData:[[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	if (ftOAuthResult.isSucceed) {
+		
+		NSDictionary *topLevel = [ftOAuthResult.returnData objectForKey:@"person"];
+		
+		if (![topLevel isEqual:[NSNull null]]) {
+			[self initWithDictionary:topLevel];
+		}
+	}
+    
+    [ftOAuthResult release];
+    [oauth release];
+}
+
+- (void) saveUsingCallback:(void (^)(FOAddress *))returnAddress {
+    
+    FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+    __block FOAddress *tmpAddress = [[FOAddress alloc] init];
+    HTTPMethod method = HTTPMethodPOST;
+	NSMutableString *urlSuffix = [NSMutableString stringWithFormat:@"People"];
+	
+	if (myId > 0) {
+		[urlSuffix appendFormat:@"/%d", myId];
+		method = HTTPMethodPUT;
+	}
+	
+	[urlSuffix appendString:@".json"];
+    
+    [oauth callFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmBase withHTTPMethod:method withData:[[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding] usingBlock:^(id block) {
+        
+        if ([block isKindOfClass:[FTOAuthResult class]]) {
+            FTOAuthResult *result = (FTOAuthResult *)block;
+            if (result.isSucceed) {
+                tmpAddress = [[FOAddress alloc] initWithDictionary:[result.returnData objectForKey:@"person"]];
+            }
+        }
+        returnAddress(tmpAddress);
+        [tmpAddress release];
+        [oauth release];
+    }];
+}
+
+- (NSString *)description
+{
+    NSMutableString *string = [NSMutableString stringWithString:@""];
+    unsigned int propertyCount;
+    objc_property_t *properties = class_copyPropertyList([self class], &propertyCount);
+    
+    for (unsigned int i = 0; i < propertyCount; i++)
+    {
+        NSString *selector = [NSString stringWithCString:property_getName(properties[i]) encoding:NSUTF8StringEncoding] ;
+        
+        SEL sel = sel_registerName([selector UTF8String]);
+        
+        const char *attr = property_getAttributes(properties[i]);
+        switch (attr[1]) {
+            case '@':
+                [string appendString:[NSString stringWithFormat:@"%s : %@\n", property_getName(properties[i]), objc_msgSend(self, sel)]];
+                break;
+            case 'i':
+                [string appendString:[NSString stringWithFormat:@"%s : %i\n", property_getName(properties[i]), objc_msgSend(self, sel)]];
+                break;
+            case 'f':
+                [string appendString:[NSString stringWithFormat:@"%s : %f\n", property_getName(properties[i]), objc_msgSend(self, sel)]];
+                break;
+            default:
+                break;
+        }
+    }
+    
+    free(properties);
+    
+    return string;
+    
+}
 
 - (void) dealloc {
 	[url release];
