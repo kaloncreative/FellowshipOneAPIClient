@@ -76,4 +76,10 @@
 // Populates an FOContributionReceipt object from a NSDictionary
 +(FOContributionReceipt *) populateFromDictionary: (NSDictionary *)dict;
 
+/* Calls the API to save the current contribution receipt. If there is an ID attached to the contribution receipt, the method assumes an update, if no id exists, the method assumes create */
+- (void) save;
+
+/* Calls the API to save the current contribution receipt. If there is an ID attached to the contribution receipt, the method assumes an update, if no id exists, the method assumes create */
+- (void) saveUsingCallback:(void (^)(FOContributionReceipt *))returnReceipt;
+
 @end
