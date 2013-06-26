@@ -111,12 +111,6 @@ typedef enum {
 // Get a household from the API based on the household id ascynchornously
 + (void) getByID: (NSInteger)hsdID usingCallback:(void (^)(FOHousehold *))returnedHousehold;
 
-/* Calls the API to save the current address. If there is an ID attached to the address, the method assumes an update, if no id exists, the method assumes create */
-- (void) save;
-
-/* Calls the API to save the current address. If there is an ID attached to the address, the method assumes an update, if no id exists, the method assumes create */
-- (void) saveUsingCallback:(void (^)(FOHousehold *))returnHousehold;
-
 /* populates an FOHousehold object from a NSDictionary */
 + (FOHousehold *)populateFromDictionary: (NSDictionary *)dict;
 

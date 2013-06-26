@@ -488,10 +488,10 @@
     [oauth release];
 }
 
-- (void) saveUsingCallback:(void (^)(FOAddress *))returnAddress {
+- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson {
     
     FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
-    __block FOAddress *tmpAddress = [[FOAddress alloc] init];
+    __block FOPerson *tmpPerson = [[FOPerson alloc] init];
     HTTPMethod method = HTTPMethodPOST;
 	NSMutableString *urlSuffix = [NSMutableString stringWithFormat:@"People"];
 	
@@ -507,11 +507,11 @@
         if ([block isKindOfClass:[FTOAuthResult class]]) {
             FTOAuthResult *result = (FTOAuthResult *)block;
             if (result.isSucceed) {
-                tmpAddress = [[FOAddress alloc] initWithDictionary:[result.returnData objectForKey:@"person"]];
+                tmpPerson = [[FOPerson alloc] initWithDictionary:[result.returnData objectForKey:@"person"]];
             }
         }
-        returnAddress(tmpAddress);
-        [tmpAddress release];
+        returnPerson(tmpPerson);
+        [tmpPerson release];
         [oauth release];
     }];
 }
