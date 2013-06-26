@@ -487,8 +487,9 @@
 		FD764C3B13D0744E00BE0F4F /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				FD0ACD4513D5B0FD00945BD4 /* Events */,
+				FD764C4413D074D700BE0F4F /* People */,
 				FD0ACD4413D5B0F100945BD4 /* Giving */,
+				FD0ACD4513D5B0FD00945BD4 /* Events */,
 				FD0ACD4313D5B0EA00945BD4 /* Groups */,
 				FD764C3C13D074D700BE0F4F /* FOError.h */,
 				FD764C3D13D074D700BE0F4F /* FOError.m */,
@@ -498,7 +499,6 @@
 				FD764C4113D074D700BE0F4F /* FOParentObject.m */,
 				FD764C4213D074D700BE0F4F /* FOPagedEntity.h */,
 				FD764C4313D074D700BE0F4F /* FOPagedEntity.m */,
-				FD764C4413D074D700BE0F4F /* People */,
 			);
 			name = Model;
 			sourceTree = "<group>";
