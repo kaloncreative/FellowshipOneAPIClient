@@ -171,6 +171,12 @@ typedef enum {
 // Returns a portait image from the F1API specified by the size S, M, or L are the options. -- This method is called synchronously --
 - (NSData *) getImageData: (NSString *)size;
 
+/* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
+- (void) save;
+
+/* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
+- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson;
+
 // Populates an FOPerson object from a NSDictionary
 +(FOPerson *) populateFromDictionary: (NSDictionary *)dict;
 

@@ -11,6 +11,8 @@
 #import "FellowshipOneAPIDateUtility.h"
 #import "FTOAuthResult.h"
 #import "FTOAuth.h"
+#import "NSObject+serializeToJSON.h"
+#import "FOCommunicationType.h"
 
 @interface FOCommunication (PRIVATE)
 
@@ -32,6 +34,7 @@
 @synthesize lastUpdatedDate;
 @synthesize typeId, typeName;
 @synthesize cleansedValue, generalType;
+@synthesize communicationType;
 
 + (FOCommunication *)populateFromDictionary: (NSDictionary *)dict {
 	
@@ -75,11 +78,26 @@
 	self.listed = [[dict objectForKey:@"listed"] boolValue];
 	self.cleansedValue = [dict objectForKey:@"searchCommunicationValue"];	
 	self.generalType = [dict objectForKey:@"communicationGeneralType"];
-	
-	self.typeId = [[[dict objectForKey:@"communicationType"] objectForKey:@"@id"] integerValue];
-	self.typeName = [[dict objectForKey:@"communicationType"] objectForKey:@"name"];
-	
+    
+    self.communicationType = [FOCommunicationType populateFromDictionary:[dict objectForKey:@"communicationType"]];
+    
 	return self;
+}
+
+- (NSInteger)typeId
+{
+    if(self.communicationType == nil)
+        return nil;
+    
+    return self.communicationType.myId;
+}
+
+- (NSString *)typeName
+{
+    if(self.communicationType == nil)
+        return nil;
+    
+    return self.communicationType.name;
 }
 
 #pragma mark Read-only properties
@@ -182,6 +200,66 @@
 	
 }
 
+- (void) save {
+	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+	HTTPMethod method = HTTPMethodPOST;
+	
+	NSMutableString *urlSuffix = [NSMutableString stringWithFormat:@"People/%d/Communications", self.personId];
+	
+	if (myId > 0) {
+		[urlSuffix appendFormat:@"/%d", myId];
+		method = HTTPMethodPUT;
+	}
+	
+	[urlSuffix appendString:@".json"];
+    
+	
+	FTOAuthResult *ftOAuthResult = [oauth callSyncFTAPIWithURLSuffix:urlSuffix
+															forRealm:FTAPIRealmBase
+													  withHTTPMethod:method
+															withData:[[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding]];
+	
+	if (ftOAuthResult.isSucceed) {
+		
+		NSDictionary *topLevel = [ftOAuthResult.returnData objectForKey:@"communication"];
+		
+		if (![topLevel isEqual:[NSNull null]]) {
+			[self initWithDictionary:topLevel];
+		}
+	}
+    
+    [ftOAuthResult release];
+    [oauth release];
+}
+
+- (void) saveUsingCallback:(void (^)(FOCommunication *))returnCommunication {
+    
+    FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
+    __block FOCommunication *tmpCommunication = [[FOCommunication alloc] init];
+    HTTPMethod method = HTTPMethodPOST;
+	NSMutableString *urlSuffix = [NSMutableString stringWithFormat:@"People/%d/Communications", self.personId];
+	
+	if (myId > 0) {
+		[urlSuffix appendFormat:@"/%d", myId];
+		method = HTTPMethodPUT;
+	}
+	
+	[urlSuffix appendString:@".json"];
+    
+    [oauth callFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmBase withHTTPMethod:method withData:[[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding] usingBlock:^(id block) {
+        
+        if ([block isKindOfClass:[FTOAuthResult class]]) {
+            FTOAuthResult *result = (FTOAuthResult *)block;
+            if (result.isSucceed) {
+                tmpCommunication = [[FOCommunication alloc] initWithDictionary:[result.returnData objectForKey:@"communication"]];
+            }
+        }
+        returnCommunication(tmpCommunication);
+        [tmpCommunication release];
+        [oauth release];
+    }];
+}
+
 #pragma mark -
 #pragma mark NSCoding Methods
 
@@ -200,8 +278,7 @@
 		self.comment = [coder decodeObjectForKey:@"comment"];
 		self.listed = [coder decodeBoolForKey:@"listed"];
 		self.lastUpdatedDate = [coder	decodeObjectForKey:@"lastUpdatedDate"];
-		self.typeId = [coder decodeIntegerForKey:@"typeId"];
-		self.typeName = [coder decodeObjectForKey:@"typeName"];
+		self.communicationType = [coder decodeObjectForKey:@"communicationType"];
 		self.cleansedValue = [coder decodeObjectForKey:@"cleansedValue"];
 		self.generalType = [coder decodeObjectForKey:@"generalType"];
 	}
@@ -220,8 +297,7 @@
 	[coder encodeObject:comment forKey:@"comment"];
 	[coder encodeBool:listed forKey:@"listed"];
 	[coder encodeObject:lastUpdatedDate forKey:@"lastUpdatedDate"];
-	[coder encodeInteger:typeId forKey:@"typeId"];
-	[coder encodeObject:typeName forKey:@"typeName"];
+	[coder encodeObject:communicationType forKey:@"communicationType"];
 	[coder encodeObject:cleansedValue forKey:@"cleansedValue"];
 	[coder encodeObject:generalType forKey:@"generalType"];
 }
@@ -241,6 +317,7 @@
 	[typeName release];
 	[generalType release];
 	[cleansedValue release];
+    [communicationType release];
 	
 	[super dealloc];
 }

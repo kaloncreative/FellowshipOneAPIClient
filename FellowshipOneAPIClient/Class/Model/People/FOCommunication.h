@@ -51,6 +51,8 @@
 
 #import <Foundation/Foundation.h>
 
+@class FOCommunicationType;
+
 @interface FOCommunication : NSObject <NSCoding> {
 	NSString *url;
 	NSInteger myId;
@@ -78,17 +80,26 @@
 @property (nonatomic, copy) NSString *comment;
 @property (nonatomic, assign) BOOL listed;
 @property (nonatomic, retain) NSDate *lastUpdatedDate;
-@property (nonatomic, assign) NSInteger typeId;
-@property (nonatomic, copy) NSString *typeName;
+// BEGIN Depricated - Use communicationType instead
+@property (nonatomic, readonly) NSInteger typeId;
+@property (nonatomic, readonly) NSString *typeName;
+// END Depricated
 @property (nonatomic, copy) NSString *generalType;
 @property (nonatomic, copy) NSString *cleansedValue;
 @property (nonatomic, readonly) NSString *urlScheme;
+@property (nonatomic, retain)	FOCommunicationType *communicationType;
 
 /* Gets all the communications associated with a specific person id -- This method is performed synchronously -- */
 + (NSArray *) getByPersonID: (NSInteger) personID;
 
 /* Gets all the communications associated with a specific household id -- This method is performed synchronously -- */
 + (NSArray *) getByHouseholdID: (NSInteger) householdID;
+
+/* Calls the API to save the current communication. If there is an ID attached to the communication, the method assumes an update, if no id exists, the method assumes create */
+- (void) save;
+
+/* Calls the API to save the current communication. If there is an ID attached to the communication, the method assumes an update, if no id exists, the method assumes create */
+- (void) saveUsingCallback:(void (^)(FOCommunication *))returnCommunication;
 
 /* Gets an FT Communication from the F1 API based on the provided address id -- This method is performed synchronously -- */
 + (FOCommunication *) getByCommunicationID: (NSInteger) communicationID;
