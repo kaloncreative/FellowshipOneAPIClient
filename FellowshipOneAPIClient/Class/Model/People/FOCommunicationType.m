@@ -53,7 +53,7 @@
 	NSString *urlSuffix = [NSString stringWithFormat:@"Communications/CommunicationTypes/%d.json", typeID];
 	
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
-	FTOAuthResult *ftOAuthResult = [oauth callSyncFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmGiving withHTTPMethod:HTTPMethodGET withData:nil];
+	FTOAuthResult *ftOAuthResult = [oauth callSyncFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmBase withHTTPMethod:HTTPMethodGET withData:nil];
 	
 	if (ftOAuthResult.isSucceed) {
 		
@@ -76,7 +76,7 @@
     FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
     __block FOCommunicationType *tmpType = [[FOCommunicationType alloc] init];
     
-    [oauth callFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmGiving withHTTPMethod:HTTPMethodGET withData:nil usingBlock:^(id block) {
+    [oauth callFTAPIWithURLSuffix:urlSuffix forRealm:FTAPIRealmBase withHTTPMethod:HTTPMethodGET withData:nil usingBlock:^(id block) {
         
         if ([block isKindOfClass:[FTOAuthResult class]]) {
             FTOAuthResult *result = (FTOAuthResult *)block;
@@ -96,7 +96,7 @@
 	NSString *theUrl = @"Communications/CommunicationTypes.json";
 	
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
-	FTOAuthResult *results = [oauth callSyncFTAPIWithURLSuffix:theUrl forRealm:FTAPIRealmGiving withHTTPMethod:HTTPMethodGET withData:nil];
+	FTOAuthResult *results = [oauth callSyncFTAPIWithURLSuffix:theUrl forRealm:FTAPIRealmBase withHTTPMethod:HTTPMethodGET withData:nil];
 	
 	if (results.isSucceed) {
 		
