@@ -33,10 +33,17 @@
     OAMutableURLRequest *request;
     NSURLResponse *response;
     BOOL didSucceed;
+    NSError *error;
+    NSString *responseBody;
+    NSInteger responseStatusCode;
 }
+
 @property(retain) OAMutableURLRequest *request;
 @property(retain) NSURLResponse *response;
 @property(assign) BOOL didSucceed;
+@property(retain) NSError *error;
+@property(retain) NSString *responseBody;
+@property(assign) NSInteger responseStatusCode;
 
 - (id)initWithRequest:(OAMutableURLRequest *)aRequest response:(NSURLResponse *)aResponse didSucceed:(BOOL)success;
 

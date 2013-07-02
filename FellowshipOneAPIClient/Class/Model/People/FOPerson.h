@@ -184,10 +184,10 @@ typedef enum {
 - (NSData *) getImageData: (NSString *)size;
 
 /* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
-- (BOOL) save;
+- (BOOL)save:(NSError **)error;
 
 /* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
-- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson;
+- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson error:(void (^)(NSError *))errorBlock;
 
 // Populates an FOPerson object from a NSDictionary
 +(FOPerson *) populateFromDictionary: (NSDictionary *)dict;

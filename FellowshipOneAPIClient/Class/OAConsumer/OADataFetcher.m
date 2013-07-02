@@ -45,13 +45,32 @@
                                          returningResponse:&response
                                                      error:&error];
 
-    NSLog(@"Request %@ status %d data %@ error %@", request, [(NSHTTPURLResponse *)response statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding], error);
+    //NSLog(@"Request %@ status %d data %@ error %@", request, [(NSHTTPURLResponse *)response statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding], error);
     
     if (response == nil || responseData == nil || error != nil) {
         OAServiceTicket *ticket= [[OAServiceTicket alloc] initWithRequest:request
                                                                  response:response
                                                                didSucceed:NO];
 		
+        
+        if(response != nil){
+            ticket.responseStatusCode = [(NSHTTPURLResponse *)response statusCode];
+        }
+        
+        if(responseData != nil){
+            ticket.responseBody = [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
+        }
+        
+        if(error != nil){
+            ticket.error = error;
+        }
+        else if(responseData == nil){
+            ticket.error = [NSError errorWithDomain:@"F1" code:2 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Response data was nil for %@", [request URL]], NSLocalizedDescriptionKey, nil]];
+        }
+        else {
+            ticket.error = [NSError errorWithDomain:@"F1" code:3 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Response was nil for %@", [request URL]], NSLocalizedDescriptionKey, nil]];
+        }
+        
         [delegate performSelector:didFailSelector
                        withObject:ticket
                        withObject:error];
@@ -64,6 +83,13 @@
         OAServiceTicket *ticket = [[OAServiceTicket alloc] initWithRequest:request
                                                                   response:response
                                                                 didSucceed:[(NSHTTPURLResponse *)response statusCode] < 400];
+        
+        ticket.responseStatusCode = [(NSHTTPURLResponse *)response statusCode];
+        ticket.responseBody = [[[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding] autorelease];
+        
+        if(!ticket.didSucceed){
+            ticket.error = [NSError errorWithDomain:@"F1" code:1 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[NSString stringWithFormat:@"Expected status code greater than 400, but got %d", ticket.responseStatusCode], NSLocalizedDescriptionKey, ticket.responseBody, NSLocalizedFailureReasonErrorKey, nil]];
+        }
         
         [delegate performSelector:didFinishSelector
                        withObject:ticket

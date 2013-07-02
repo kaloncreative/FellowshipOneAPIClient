@@ -228,7 +228,7 @@
 //    }];
 //}
 
-- (void) save {
+- (BOOL) save:(NSError **)error{
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
 	HTTPMethod method = HTTPMethodPOST;
 	
@@ -254,13 +254,22 @@
 		if (![topLevel isEqual:[NSNull null]]) {
 			[self initWithDictionary:topLevel];
 		}
+        
+        //[ftOAuthResult release];
+        [oauth release];
+        return YES;
 	}
-    
-    [ftOAuthResult release];
-    [oauth release];
+    else {
+        if(error != NULL){
+            *error = ftOAuthResult.error;
+        }
+        //[ftOAuthResult release];
+        [oauth release];
+        return NO;
+    }
 }
 
-- (void) saveUsingCallback:(void (^)(FOContributionReceipt *))returnReceipt {
+- (void) saveUsingCallback:(void (^)(FOContributionReceipt *))returnReceipt error:(void (^)(NSError *))errorBlock {
     
     FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
     __block FOContributionReceipt *tmpReceipt = [[FOContributionReceipt alloc] init];
@@ -280,9 +289,15 @@
             FTOAuthResult *result = (FTOAuthResult *)block;
             if (result.isSucceed) {
                 tmpReceipt = [[FOContributionReceipt alloc] initWithDictionary:[result.returnData objectForKey:@"contributionReceipt"]];
+                returnReceipt(tmpReceipt);
+            }
+            else {
+                errorBlock(result.error);
             }
         }
-        returnReceipt(tmpReceipt);
+        else {
+            errorBlock([NSError errorWithDomain:@"F1" code:4 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Response was not a FTOAuthResult", NSLocalizedDescriptionKey, nil]]);
+        }
         [tmpReceipt release];
         [oauth release];
     }];

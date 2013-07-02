@@ -568,7 +568,7 @@
     }];
 }
 
-- (BOOL) save {
+- (BOOL)save:(NSError **)error {
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
 	HTTPMethod method = HTTPMethodPOST;
 	
@@ -597,19 +597,22 @@
 			[self initWithDictionary:topLevel];
 		}
         
-        [ftOAuthResult release];
+        //[ftOAuthResult release];
         [oauth release];
         
         return YES;
 	}
     else {
-        [ftOAuthResult release];
+        if(error != NULL){
+            *error = ftOAuthResult.error;
+        }
+        //[ftOAuthResult release];
         [oauth release];
         return NO;
     }
 }
 
-- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson {
+- (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson error:(void (^)(NSError *))errorBlock {
     
     FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
     __block FOPerson *tmpPerson = [[FOPerson alloc] init];
@@ -629,9 +632,15 @@
             FTOAuthResult *result = (FTOAuthResult *)block;
             if (result.isSucceed) {
                 tmpPerson = [[FOPerson alloc] initWithDictionary:[result.returnData objectForKey:@"person"]];
+                returnPerson(tmpPerson);
+            }
+            else {
+                errorBlock(result.error);
             }
         }
-        returnPerson(tmpPerson);
+        else {
+            errorBlock([NSError errorWithDomain:@"F1" code:4 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:@"Response was not a FTOAuthResult", NSLocalizedDescriptionKey, nil]]);
+        }
         [tmpPerson release];
         [oauth release];
     }];

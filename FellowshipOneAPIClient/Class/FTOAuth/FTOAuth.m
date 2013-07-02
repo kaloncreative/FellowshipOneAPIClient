@@ -596,6 +596,15 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 			self.ftOAuthResult.returnImageData = data;
 		}
 	}
+    else {
+        if (!self.ftOAuthResult) {
+			self.ftOAuthResult = [[[FTOAuthResult alloc] init] autorelease];
+		}
+        
+        self.ftOAuthResult.error = ticket.error;
+        self.ftOAuthResult.responseBody = ticket.responseBody;
+        self.ftOAuthResult.responseStatusCode = ticket.responseStatusCode;
+    }
 }
 
 - (void) callFTAPIDidFail: (OAServiceTicket *)ticket withData:(NSData *)data {
@@ -685,6 +694,9 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 	FTOAuthResult *oauthResult = [[FTOAuthResult alloc] init];
 	
 	oauthResult.isSucceed = NO;
+    oauthResult.responseStatusCode = ticket.responseStatusCode;
+    oauthResult.responseBody = ticket.responseBody;
+    oauthResult.error = ticket.error;
 	
 	self.ftOAuthResult = oauthResult;
 }

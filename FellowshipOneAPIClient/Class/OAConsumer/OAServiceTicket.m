@@ -28,7 +28,7 @@
 
 
 @implementation OAServiceTicket
-@synthesize request, response, didSucceed;
+@synthesize request, response, didSucceed, error, responseBody, responseStatusCode;
 
 - (id)initWithRequest:(OAMutableURLRequest *)aRequest response:(NSURLResponse *)aResponse didSucceed:(BOOL)success 
 {
@@ -45,8 +45,12 @@
 {
 	request = nil;
 	response = nil;
+    responseBody = nil;
+    error = nil;
 	[request release];
 	[response release];
+    [responseBody release];
+    [error release];
 	[super dealloc];
 }
 

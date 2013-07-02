@@ -17,12 +17,14 @@
 @synthesize returnData;
 @synthesize isSucceed;
 @synthesize returnImageData;
-
+@synthesize error, responseBody, responseStatusCode;
 
 - (void) dealloc
 {
 	[returnData release];
 	[returnImageData release];
+    [responseBody release];
+    [error release];
 	[super dealloc];
 }
 
