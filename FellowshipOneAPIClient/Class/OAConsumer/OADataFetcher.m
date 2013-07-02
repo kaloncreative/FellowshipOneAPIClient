@@ -45,6 +45,8 @@
                                          returningResponse:&response
                                                      error:&error];
 
+    NSLog(@"Request %@ status %d data %@ error %@", request, [(NSHTTPURLResponse *)response statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding], error);
+    
     if (response == nil || responseData == nil || error != nil) {
         OAServiceTicket *ticket= [[OAServiceTicket alloc] initWithRequest:request
                                                                  response:response
@@ -62,7 +64,7 @@
         OAServiceTicket *ticket = [[OAServiceTicket alloc] initWithRequest:request
                                                                   response:response
                                                                 didSucceed:[(NSHTTPURLResponse *)response statusCode] < 400];
-		
+        
         [delegate performSelector:didFinishSelector
                        withObject:ticket
                        withObject:responseData];

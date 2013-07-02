@@ -13,6 +13,7 @@
 #import "FTOAuth.h"
 #import "NSObject+serializeToJSON.h"
 #import "FOCommunicationType.h"
+#import "FOParentObject.h"
 
 @interface FOCommunication (PRIVATE)
 
@@ -31,10 +32,47 @@
 @synthesize value;
 @synthesize comment;
 @synthesize listed;
-@synthesize lastUpdatedDate;
+@synthesize createdDate, lastUpdatedDate;
 @synthesize typeId, typeName;
 @synthesize cleansedValue, generalType;
 @synthesize communicationType;
+@synthesize person, household;
+
+- (NSDictionary *)serializationMapper {
+	
+	if (!_serializationMapper) {
+		
+		NSMutableDictionary *mapper = [[NSMutableDictionary alloc] init];
+		NSMutableDictionary *attributeKeys = [[NSMutableDictionary alloc] init];
+		NSArray *attributeOrder = [[NSArray alloc] initWithObjects:@"myId", @"url", nil];
+		
+		[mapper setObject:attributeOrder forKey:@"attributeOrder"];
+		[attributeOrder release];
+		
+		[attributeKeys setValue:@"@uri" forKey:@"url"];
+		[attributeKeys setValue:@"@id" forKey:@"myId"];
+		
+		
+		[mapper setObject:attributeKeys forKey:@"attributes"];
+		[attributeKeys release];
+		
+		NSArray *fieldOrder = [[NSArray alloc] initWithObjects:@"household", @"person", @"communicationType", @"generalType", @"value", @"cleansedValue", @"listed", @"comment", @"createdDate", @"lastUpdatedDate",nil];
+		[mapper setObject:fieldOrder forKey:@"fieldOrder"];
+		[fieldOrder release];
+		
+		[mapper setValue:@"communicationGeneralType" forKey:@"generalType"];
+		[mapper setValue:@"communicationValue" forKey:@"value"];
+		[mapper setValue:@"searchCommunicationValue" forKey:@"cleansedValue"];
+		[mapper setValue:@"communicationComment" forKey:@"comment"];
+        [mapper setValue:@"preferred" forKey:@"listed"];
+		[mapper setValue:@"lastUpdatedDate" forKey:@"lastUpdatedDate"];
+		
+		_serializationMapper = [[NSDictionary alloc] initWithDictionary:mapper];
+		[mapper release];
+	}
+	
+	return _serializationMapper;
+}
 
 + (FOCommunication *)populateFromDictionary: (NSDictionary *)dict {
 	
@@ -48,17 +86,10 @@
 	
 	self.url = [dict objectForKey:@"@uri"];
 	self.myId = [[dict objectForKey:@"@id"] integerValue];
-	self.householdId = [[[dict objectForKey:@"household"] objectForKey:@"@id"] integerValue];
-	self.householdUrl = [[dict objectForKey:@"household"] objectForKey:@"@uri"];
 	
-	NSDictionary *person = [dict objectForKey:@"person"];
-	self.personUrl = [person objectForKey:@"@uri"];
-	if (![self.personUrl isEqual:[NSNull null]]) {
-		self.personId = [[person objectForKey:@"@id"] integerValue];
-	}
-	else {
-		self.personUrl = nil;
-	}
+    self.household = [FOParentObject populateFromDictionary:[dict objectForKey:@"household"]];
+    
+	self.person = [FOParentObject populateFromDictionary:[dict objectForKey:@"person"]];
 	
 	self.value = [dict objectForKey:@"communicationValue"];
 	
@@ -66,6 +97,8 @@
 	if ([self.comment isEqual:[NSNull null]]) {
 		self.comment = nil;
 	}
+    
+    self.createdDate = [FellowshipOneAPIDateUtility dateFromString:[dict objectForKey:@"createdDate"]];
 	
 	NSString *tempLastUpdatedDate = [dict objectForKey:@"lastUpdatedDate"];
 	if ([tempLastUpdatedDate isEqual:[NSNull null]]) {
@@ -87,7 +120,7 @@
 - (NSInteger)typeId
 {
     if(self.communicationType == nil)
-        return nil;
+        return NSIntegerMin;
     
     return self.communicationType.myId;
 }
@@ -98,6 +131,38 @@
         return nil;
     
     return self.communicationType.name;
+}
+
+- (NSInteger)householdId
+{
+    if(self.household == nil)
+        return NSIntegerMin;
+    
+    return self.household.myId;
+}
+
+- (NSString *)householdUrl
+{
+    if(self.household == nil)
+        return nil;
+    
+    return self.household.url;
+}
+
+- (NSInteger)personId
+{
+    if(self.person == nil)
+        return NSIntegerMin;
+    
+    return self.person.myId;
+}
+
+- (NSString *)personUrl
+{
+    if(self.person == nil)
+        return nil;
+    
+    return self.person.url;
 }
 
 #pragma mark Read-only properties
@@ -270,13 +335,12 @@
 	if (self != nil) {
 		self.url = [coder decodeObjectForKey:@"url"];
 		self.myId = [coder decodeIntegerForKey:@"myId"];
-		self.householdId = [coder decodeIntegerForKey:@"householdId"];
-		self.householdUrl = [coder decodeObjectForKey:@"householdUrl"];
-		self.personId = [coder decodeIntegerForKey:@"personId"];
-		self.personUrl = [coder decodeObjectForKey:@"personUrl"];
+		self.household = [coder decodeObjectForKey:@"household"];
+		self.person = [coder decodeObjectForKey:@"person"];
 		self.value = [coder decodeObjectForKey:@"value"];
 		self.comment = [coder decodeObjectForKey:@"comment"];
 		self.listed = [coder decodeBoolForKey:@"listed"];
+        self.createdDate = [coder decodeObjectForKey:@"createdDate"];
 		self.lastUpdatedDate = [coder	decodeObjectForKey:@"lastUpdatedDate"];
 		self.communicationType = [coder decodeObjectForKey:@"communicationType"];
 		self.cleansedValue = [coder decodeObjectForKey:@"cleansedValue"];
@@ -289,13 +353,12 @@
 - (void) encodeWithCoder: (NSCoder *)coder {
 	[coder encodeObject:url forKey:@"url"];
 	[coder encodeInteger:myId forKey:@"myId"];
-	[coder encodeInteger:householdId forKey:@"householdId"];
-	[coder encodeObject:householdUrl forKey:@"householdUrl"];
-	[coder encodeInteger:personId forKey:@"personId"];
-	[coder encodeObject:personUrl forKey:@"personUrl"];
+	[coder encodeObject:household forKey:@"household"];
+	[coder encodeObject:person forKey:@"person"];
 	[coder encodeObject:value forKey:@"value"];
 	[coder encodeObject:comment forKey:@"comment"];
 	[coder encodeBool:listed forKey:@"listed"];
+    [coder encodeObject:createdDate forKey:@"createdDate"];
 	[coder encodeObject:lastUpdatedDate forKey:@"lastUpdatedDate"];
 	[coder encodeObject:communicationType forKey:@"communicationType"];
 	[coder encodeObject:cleansedValue forKey:@"cleansedValue"];
@@ -309,15 +372,17 @@
 - (void) dealloc {
 	
 	[url release];
-	[householdUrl release];
-	[personUrl release];
+	[household release];
+	[person release];
 	[value release];
 	[comment release];
+    [createdDate release];
 	[lastUpdatedDate release];
 	[typeName release];
 	[generalType release];
 	[cleansedValue release];
     [communicationType release];
+    [_serializationMapper release];
 	
 	[super dealloc];
 }

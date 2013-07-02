@@ -102,6 +102,7 @@
 
 - (void)dealloc {
 	[url release];
+    [_serializationMapper release];
 	[super dealloc];
 }
 

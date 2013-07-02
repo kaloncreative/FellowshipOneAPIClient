@@ -52,42 +52,55 @@
 #import <Foundation/Foundation.h>
 
 @class FOCommunicationType;
+@class FOParentObject;
 
 @interface FOCommunication : NSObject <NSCoding> {
 	NSString *url;
 	NSInteger myId;
-	NSInteger householdId;
-	NSString *householdUrl;
-	NSInteger personId;
-	NSString *personUrl;
 	NSString *value;
 	NSString *comment;
 	BOOL listed;
 	NSDate *lastUpdatedDate;
+    NSDate *createdDate;
 	NSInteger typeId;
 	NSString *typeName;
 	NSString *generalType;
 	NSString *cleansedValue;
+    FOCommunicationType *communicationType;
+    FOParentObject *household;
+    FOParentObject *person;
+    @private NSDictionary *_serializationMapper;
 }
 
 @property (nonatomic, copy) NSString *url;
 @property (nonatomic, assign) NSInteger myId;
-@property (nonatomic, assign) NSInteger householdId;
-@property (nonatomic, copy) NSString *householdUrl;
-@property (nonatomic, assign) NSInteger personId;
-@property (nonatomic, copy) NSString *personUrl;
+// BEGIN Depricated - Use household instead
+@property (nonatomic, assign, readonly) NSInteger householdId;
+@property (nonatomic, assign, readonly) NSString *householdUrl;
+// END Depricated
+// BEGIN Depricated - Use person instead
+@property (nonatomic, assign, readonly) NSInteger personId;
+@property (nonatomic, assign, readonly) NSString *personUrl;
+// END Depricated 
 @property (nonatomic, copy) NSString *value;
 @property (nonatomic, copy) NSString *comment;
 @property (nonatomic, assign) BOOL listed;
+@property (nonatomic, retain) NSDate *createdDate;
 @property (nonatomic, retain) NSDate *lastUpdatedDate;
 // BEGIN Depricated - Use communicationType instead
-@property (nonatomic, readonly) NSInteger typeId;
-@property (nonatomic, readonly) NSString *typeName;
+@property (nonatomic, assign, readonly) NSInteger typeId;
+@property (nonatomic, assign, readonly) NSString *typeName;
 // END Depricated
 @property (nonatomic, copy) NSString *generalType;
 @property (nonatomic, copy) NSString *cleansedValue;
 @property (nonatomic, readonly) NSString *urlScheme;
 @property (nonatomic, retain)	FOCommunicationType *communicationType;
+@property (nonatomic, retain) FOParentObject *person;
+@property (nonatomic, retain) FOParentObject *household;
+
+/* maps the properties in this class to the required properties and order from an API request.
+ This is needed for when the object is saved since the xsd requires a certain order for all fields */
+@property (nonatomic, readonly, assign) NSDictionary *serializationMapper;
 
 /* Gets all the communications associated with a specific person id -- This method is performed synchronously -- */
 + (NSArray *) getByPersonID: (NSInteger) personID;

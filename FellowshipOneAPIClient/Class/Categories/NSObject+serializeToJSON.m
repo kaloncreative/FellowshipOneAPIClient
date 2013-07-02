@@ -8,8 +8,6 @@
 
 #import "NSObject+serializeToJSON.h"
 
-
-#import "NSObject+serializeToXml.h"
 #import "objc/runtime.h"
 #import "FOParentObject.h"
 #import "FOParentNamedObject.h"
@@ -19,7 +17,7 @@
 
 @interface NSObject (private)
 
-// Determine if one of the properties in the list is excluded from being serialized to xml
+// Determine if one of the properties in the list is excluded from being serialized to json
 // Currently the only way to do this is to create a list
 - (BOOL)propertyIsExcluded:(NSString *)propertyName;
 
@@ -32,7 +30,7 @@
 
 - (BOOL)propertyIsExcluded:(NSString *)propertyName {
 	
-	// Create an array with properties that are going to be excluded from all xml serialization requests
+	// Create an array with properties that are going to be excluded from all json serialization requests
 	NSMutableArray *exclusionList = [NSMutableArray arrayWithObjects:@"delegate", nil];
 	
 	for (NSString *current in exclusionList) {
@@ -56,7 +54,12 @@
 		NSLog(@"%d", [value integerValue]);
 		if ([value integerValue] == 1 || [value integerValue] == 0) {
 			if ([fieldName isEqualToString:@"myId"]) {
-				return [NSString stringWithFormat:@"%d", [value integerValue]];
+                if([value integerValue] == 0){
+                    return @"";
+                }
+                else {
+                    return [NSString stringWithFormat:@"%d", [value integerValue]];
+                }
 			}
 			else {
 				if ([value boolValue]) {
@@ -90,7 +93,7 @@
 	
 	
 	// The prefix for all class names that needs to be stripped
-	NSString *objectNamePrefix = [NSString stringWithString:@"FO"];
+	NSString *objectNamePrefix = @"FO";
 	
 	NSMutableString *className = [NSMutableString stringWithFormat:@"%@", [self class]];
 	
@@ -154,18 +157,57 @@
 		// For each object in the dictionary that is not the attributes, add the value
 		NSArray *fieldOrder = [serializationMapper objectForKey:@"fieldOrder"];
 		
+        NSString *objectNamePrefix = @"FO";
+        
 		for (int i = 0; i < [fieldOrder count]; i++) {
 			
 			NSString *fieldName = [fieldOrder objectAtIndex:i];
 			
-			// There are certain objects that can belong to an entity like ParentObject. If the object that is being added to the xml
-			// Is a parent object, then serialize that to xml
-			if ([[self valueForKey:fieldName] isKindOfClass:[FOParentObject class]] ||
-				[[self valueForKey:fieldName] isKindOfClass:[FOParentNamedObject class]]) {
-				[jsonReturnString appendString:[[self valueForKey:fieldName] serializeToJSON:fieldName isChild:YES]];
+			// There are certain objects that can belong to an entity like ParentObject. If the object that is being added to the json
+			// Is a parent object, then serialize that to json
+            
+            NSMutableString *className = [NSMutableString stringWithFormat:@"%@", [[self valueForKey:fieldName] class]];
+            
+            NSString *field = [serializationMapper valueForKey:fieldName];
+            
+            if([field isKindOfClass:[NSNull class]] || field == nil){
+                field = [NSString stringWithString:fieldName];
+            }
+            
+            NSLog(@"field %@", field);
+            
+//			if ([[self valueForKey:fieldName] isKindOfClass:[FOParentObject class]] ||
+//				[[self valueForKey:fieldName] isKindOfClass:[FOParentNamedObject class]]) {
+            if ([className rangeOfString:objectNamePrefix].length > 0) {
+                [jsonReturnString appendString:[[self valueForKey:fieldName] serializeToJSON:fieldName isChild:YES]];
 			}
+            else if([[self valueForKey:fieldName] isKindOfClass:[NSDictionary class]]){
+                NSDictionary *dict = [self valueForKey:fieldName];
+                [jsonReturnString appendFormat:@"\"%@\":{", field];
+                int j = 0;
+                for(NSString *key in dict.allKeys)
+                {
+                    NSLog(@"key %@", key);
+                    
+                    if([key isEqualToString:@"id"]){
+                        [jsonReturnString appendFormat:@"\"@id\":\"%@\"", [dict valueForKey:key]];
+                    }
+                    else if([key isEqualToString:@"uri"]){
+                        [jsonReturnString appendFormat:@"\"@uri\":\"%@\"", [dict valueForKey:key]];
+                    }
+                    else {
+                        [jsonReturnString appendFormat:@"\"%@\":\"%@\"", key, [dict valueForKey:key]];
+                    }
+                    
+                    if (j != ([dict.allKeys count] - 1)) {
+                        [jsonReturnString appendFormat:@","];
+                    }
+                    j++;
+                }
+                [jsonReturnString appendString:@"}"];
+            }
 			else {
-				[jsonReturnString appendFormat:@"\"%@\":\"%@\"", [serializationMapper valueForKey:fieldName], [self cleanseValue:[self valueForKey:fieldName] field:fieldName]];
+				[jsonReturnString appendFormat:@"\"%@\":\"%@\"", field, [self cleanseValue:[self valueForKey:fieldName] field:field]];
 			}
 			
 			if (i != ([fieldOrder count] - 1)) {
@@ -186,4 +228,3 @@
 }
 
 @end
-

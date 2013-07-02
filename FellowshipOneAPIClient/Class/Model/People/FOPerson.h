@@ -65,6 +65,7 @@ typedef enum {
 @class FTOAuthResult;
 @class FTError;
 @class FOPersonQO;
+@class FOParentNamedObject;
 
 @interface FOPerson : NSObject <NSCoding> {
 
@@ -92,6 +93,9 @@ typedef enum {
 	NSData					*rawImage;
     NSArray                 *addresses;
     NSArray                 *communications;
+    BOOL isAuthorized;
+    
+    @private NSDictionary *_serializationMapper;
 }
 
 @property (nonatomic, assign)	NSInteger myId;
@@ -116,8 +120,16 @@ typedef enum {
 @property (nonatomic, retain)	FOHouseholdMemberType *householdMemberType;
 @property (nonatomic, retain)	FOStatus *status;
 @property (nonatomic, retain)	NSData *rawImage;
-@property (nonatomic, retain) NSArray *addresses;
-@property (nonatomic, retain) NSArray *communications;
+@property (nonatomic, retain)   NSArray *addresses;
+@property (nonatomic, retain)   NSArray *communications;
+@property (nonatomic, assign)   BOOL isAuthorized;
+@property (nonatomic, assign, readonly)   NSDictionary *occupation;
+@property (nonatomic, assign, readonly)   NSString *employer;
+//@property (nonatomic, assign, readonly)   NSDictionary *occupation;
+
+/* maps the properties in this class to the required properties and order from an API request.
+ This is needed for when the object is saved since the xsd requires a certain order for all fields */
+@property (nonatomic, readonly, assign) NSDictionary *serializationMapper;
 
 // Convienence property for returning a casual name
 // The property tries to get the GoesBy name, if one doesn't exist it gets the First Name
@@ -172,7 +184,7 @@ typedef enum {
 - (NSData *) getImageData: (NSString *)size;
 
 /* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
-- (void) save;
+- (BOOL) save;
 
 /* Calls the API to save the current person. If there is an ID attached to the person, the method assumes an update, if no id exists, the method assumes create */
 - (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson;

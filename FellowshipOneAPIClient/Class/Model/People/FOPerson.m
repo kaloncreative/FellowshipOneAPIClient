@@ -19,6 +19,7 @@
 #import "ConsoleLog.h"
 #import "FOAddress.h"
 #import "FOCommunication.h"
+#import "FOParentNamedObject.h"
 #import "FOPersonQO.h"
 #import "NSString+URLEncoding.h"
 #import "NSObject+serializeToJSON.h"
@@ -52,8 +53,117 @@
 @synthesize status;
 @synthesize addresses;
 @synthesize communications;
+@synthesize isAuthorized;
+
+- (NSDictionary *)serializationMapper {
+	
+	if (!_serializationMapper) {
+		
+		NSMutableDictionary *mapper = [[NSMutableDictionary alloc] init];
+		NSMutableDictionary *attributeKeys = [[NSMutableDictionary alloc] init];
+		NSArray *attributeOrder = [[NSArray alloc] initWithObjects:@"myId", @"url", @"householdId", nil];
+		
+		[mapper setObject:attributeOrder forKey:@"attributeOrder"];
+		[attributeOrder release];
+		
+		[attributeKeys setValue:@"@uri" forKey:@"url"];
+		[attributeKeys setValue:@"@id" forKey:@"myId"];
+		[attributeKeys setValue:@"@householdID" forKey:@"householdId"];
+		
+		[mapper setObject:attributeKeys forKey:@"attributes"];
+		[attributeKeys release];
+		
+		NSArray *fieldOrder = [[NSArray alloc] initWithObjects:@"title", @"salutation", @"prefix", @"firstName", @"lastName", @"suffix", @"middleName", @"goesByName", @"formerName", @"gender", @"dateOfBirth", @"maritalStatus", @"householdMemberType", @"isAuthorized", @"status", @"occupation", @"employer", @"school", @"denomination", @"formerChurch", @"barCode", @"memberEnvelopeCode", @"defaultTagComment", @"weblink", @"solicit", @"thank", @"firstRecord", @"lastMatchDate", @"createdDate", @"lastUpdatedDate",nil];
+		[mapper setObject:fieldOrder forKey:@"fieldOrder"];
+		[fieldOrder release];
+		
+		//[mapper setValue:@"imageURI" forKey:@"imageURL"];
+		
+		_serializationMapper = [[NSDictionary alloc] initWithDictionary:mapper];
+		[mapper release];
+	}
+	
+	return _serializationMapper;
+}
 
 #pragma mark Additional Properties
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSDictionary *)occupation
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"name", @"", @"description", nil];
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)employer
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSDictionary *)school
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"name", nil];
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSDictionary *)denomination
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"name", nil];
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)formerChurch
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)barCode
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)memberEnvelopeCode
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)defaultTagComment
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSDictionary *)weblink
+{
+    return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"userID", @"", @"passwordHint", @"", @"passwordAnswer", nil];
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)solicit
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)thank
+{
+    return @"";
+}
+
+// NOT IMPLEMENTED Placeholder for save
+- (NSString *)lastMatchDate
+{
+    return @"";
+}
+
+//- (id)valueForUndefinedKey:(NSString *)key
+//{
+//    
+//}
 
 - (NSString *)casualName {
 	NSMutableString *name;
@@ -77,19 +187,19 @@
 }
 
 - (NSString *)lastNameFirstName {
-    NSMutableString *name;
+    NSMutableString *name = [NSMutableString new];
 	
-
-	[name appendString:self.lastName];
-    [name appendString:@", "];
+    if(self.lastName != nil){
+        [name appendString:self.lastName];
+        [name appendString:@", "];
+    }
     
     if (self.goesByName != nil) {
-		name = [NSMutableString stringWithString:self.goesByName];
+		[name appendString:self.goesByName];
 	}
-	else {
-		name = [NSMutableString stringWithString:self.firstName];
+	else if(self.firstName != nil) {
+		[name appendString:self.firstName];
 	}
-	
 
 	return name;
 
@@ -159,6 +269,8 @@
 	
 	self.imageURL = [dict objectForKey:@"@imageURI"];
 	
+    self.isAuthorized = [[dict objectForKey:@"isAuthorized"] boolValue];
+    
     // Address collection
     NSDictionary *addressResults = [dict objectForKey:@"addresses"];
     
@@ -456,7 +568,7 @@
     }];
 }
 
-- (void) save {
+- (BOOL) save {
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
 	HTTPMethod method = HTTPMethodPOST;
 	
@@ -470,10 +582,12 @@
 	[urlSuffix appendString:@".json"];
     
 	
+    NSData *data = [[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding];
+    
 	FTOAuthResult *ftOAuthResult = [oauth callSyncFTAPIWithURLSuffix:urlSuffix
 															forRealm:FTAPIRealmBase
 													  withHTTPMethod:method
-															withData:[[self serializeToJSON] dataUsingEncoding:NSUTF8StringEncoding]];
+															withData:data];
 	
 	if (ftOAuthResult.isSucceed) {
 		
@@ -482,10 +596,17 @@
 		if (![topLevel isEqual:[NSNull null]]) {
 			[self initWithDictionary:topLevel];
 		}
+        
+        [ftOAuthResult release];
+        [oauth release];
+        
+        return YES;
 	}
-    
-    [ftOAuthResult release];
-    [oauth release];
+    else {
+        [ftOAuthResult release];
+        [oauth release];
+        return NO;
+    }
 }
 
 - (void) saveUsingCallback:(void (^)(FOPerson *))returnPerson {
@@ -572,6 +693,8 @@
 	[rawImage release];
     [addresses release];
     [communications release];
+    [_serializationMapper release];
+    
     [super dealloc];
 }
 

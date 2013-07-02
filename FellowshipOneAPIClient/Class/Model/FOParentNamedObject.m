@@ -114,6 +114,7 @@
 - (void)dealloc {
 	[url release];
 	[name release];
+    [_serializationMapper release];
 	[super dealloc];
 }
 

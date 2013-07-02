@@ -60,6 +60,7 @@
 	NSString *comment;	
 	NSDate *date;
 	FOSubStatus *subStatus;
+    NSDictionary *_serializationMapper;
 }
 
 @property (nonatomic, copy) NSString *url;
@@ -68,6 +69,13 @@
 @property (nonatomic, copy) NSString *comment;
 @property (nonatomic, retain) NSDate *date;
 @property (nonatomic, retain) FOSubStatus *subStatus;
+
+/* maps the properties in this class to the required properties and order from an API request.
+ This is needed for when the object is saved since the xsd requires a certain order for all fields */
+@property (nonatomic, readonly, assign) NSDictionary *serializationMapper;
+
+/* Gets all the status types -- This method is performed synchronously -- */
++ (NSArray *)getAll;
 
 + (FOStatus *)populateFromDictionary: (NSDictionary *)dict;
 - (id)initWithDictionary:(NSDictionary *)dict;
