@@ -134,6 +134,9 @@
 - (void) save;
 
 /* Calls the API to save the current address. If there is an ID attached to the address, the method assumes an update, if no id exists, the method assumes create */
+- (BOOL) save:(NSError **)error;
+
+/* Calls the API to save the current address. If there is an ID attached to the address, the method assumes an update, if no id exists, the method assumes create */
 - (void) saveUsingCallback:(void (^)(FOAddress *))returnAddress;
 
 /* Calls the API to delete the current address. */

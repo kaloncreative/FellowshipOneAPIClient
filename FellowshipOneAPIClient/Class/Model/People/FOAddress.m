@@ -346,7 +346,11 @@
     }];
 }
 
-- (void) save {
+- (void)save {
+    [self save:nil];
+}
+
+- (BOOL) save:(NSError **)error {
 	FTOAuth *oauth = [[FTOAuth alloc] initWithDelegate:self];
 	HTTPMethod method = HTTPMethodPOST;
 	
@@ -372,10 +376,19 @@
 		if (![topLevel isEqual:[NSNull null]]) {		
 			[self initWithDictionary:topLevel];
 		}
+        
+        //[ftOAuthResult release];
+        [oauth release];
+        return YES;
 	}
-    
-    [ftOAuthResult release];
-    [oauth release];
+    else {
+        if(error != NULL){
+            *error = ftOAuthResult.error;
+        }
+        //[ftOAuthResult release];
+        [oauth release];
+        return NO;
+    }
 }
 
 - (void) saveUsingCallback:(void (^)(FOAddress *))returnAddress {

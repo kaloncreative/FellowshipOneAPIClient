@@ -51,7 +51,7 @@
 		return [NSString stringWithFormat:@"%@", [FellowshipOneAPIDateUtility stringFromDate:value withDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"]];
 	}
 	else if ([value isKindOfClass:[NSNumber class]]) {
-		NSLog(@"%d", [value integerValue]);
+		//NSLog(@"%d", [value integerValue]);
 		if ([value integerValue] == 1 || [value integerValue] == 0) {
 			if ([fieldName isEqualToString:@"myId"]) {
                 if([value integerValue] == 0){
@@ -174,7 +174,7 @@
                 field = [NSString stringWithString:fieldName];
             }
             
-            NSLog(@"field %@", field);
+//            NSLog(@"field %@", field);
             
 //			if ([[self valueForKey:fieldName] isKindOfClass:[FOParentObject class]] ||
 //				[[self valueForKey:fieldName] isKindOfClass:[FOParentNamedObject class]]) {
@@ -187,7 +187,7 @@
                 int j = 0;
                 for(NSString *key in dict.allKeys)
                 {
-                    NSLog(@"key %@", key);
+                    //NSLog(@"key %@", key);
                     
                     if([key isEqualToString:@"id"]){
                         [jsonReturnString appendFormat:@"\"@id\":\"%@\"", [dict valueForKey:key]];
@@ -222,7 +222,7 @@
 		[jsonReturnString appendString:@"}"];
 	}
 	
-	NSLog(@"%@", jsonReturnString);
+	NSLog(@"Serialized JSON: %@", jsonReturnString);
 	
 	return jsonReturnString;
 }
