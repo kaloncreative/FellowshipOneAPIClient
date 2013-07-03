@@ -23,8 +23,8 @@
 //  THE SOFTWARE.
 
 #import "OAAsynchronousDataFetcher.h"
-
 #import "OAServiceTicket.h"
+#import "ConsoleLog.h"
 
 @implementation OAAsynchronousDataFetcher
 
@@ -125,9 +125,9 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection
 {
 	
-	FOLog(@"HTTP Response Status Code: %d", [(NSHTTPURLResponse *)response statusCode]);
-	FOLog(@"HTTP Response Status Description: %@", [NSHTTPURLResponse localizedStringForStatusCode:[(NSHTTPURLResponse *)response statusCode]]);
-	FOLog(@"HTTP Response Headers: %@", [(NSHTTPURLResponse *)response allHeaderFields]);
+	FOLog(FOLogVerbosityEveryStep, @"HTTP Response Status Code: %d", [(NSHTTPURLResponse *)response statusCode]);
+	FOLog(FOLogVerbosityEveryStep, @"HTTP Response Status Description: %@", [NSHTTPURLResponse localizedStringForStatusCode:[(NSHTTPURLResponse *)response statusCode]]);
+	FOLog(FOLogVerbosityEveryStep, @"HTTP Response Headers: %@", [(NSHTTPURLResponse *)response allHeaderFields]);
 	
 	OAServiceTicket *ticket = [[OAServiceTicket alloc] initWithRequest:request
 						response:response

@@ -7,7 +7,7 @@
 //
 
 #import "WebRequest.h"
-
+#import "ConsoleLog.h"
 
 @implementation WebRequest
 
@@ -19,7 +19,7 @@
 
 - (void) makeWebRequest: (NSURL *) theUrl usingCallback:(void (^)(id))returnedResults {
     
-    FOLog(@"Making request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Making request to %@", theUrl);
     
     self.storedBlock = returnedResults;
 	
@@ -31,7 +31,7 @@
 
 - (id) putWebRequest:(NSURL *)theUrl withData:(NSData *)data {
     
-    FOLog(@"Putting request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Putting request to %@", theUrl);
     
     // Create the request 
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:theUrl];
@@ -44,13 +44,13 @@
                                                                       error:&error];
 	
     if (error) {
-        FOLog(@"Error occurred :: %@", error);
+        FOLog(FOLogVerbosityErrorsOnly, @"Error occurred :: %@", error);
     }
     else {
         NSString *responseBody = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
         NSString *requestBody = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        FOLog(@"Web Request Response :: %@", responseBody);
-        FOLog(@"Request :: %@", requestBody);
+        FOLog(FOLogVerbosityEveryStep, @"Web Request Response :: %@", responseBody);
+        FOLog(FOLogVerbosityEveryStep, @"Request :: %@", requestBody);
         [responseBody release];
         [requestBody release];
         
@@ -63,7 +63,7 @@
 
 - (void) putWebRequest: (NSURL *)theUrl withData: (NSData *)data usingCallback:(void (^)(id))returnedResults {
     
-    FOLog(@"Posting request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Posting request to %@", theUrl);
     
     self.storedBlock = returnedResults;
     
@@ -77,7 +77,7 @@
 
 - (id) postWebRequest:(NSURL *)theUrl withData:(NSData *)data {
 
-    FOLog(@"Posting request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Posting request to %@", theUrl);
     
     // Create the request 
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:theUrl];
@@ -90,14 +90,14 @@
                                                                       error:&error];
 	
     if(error)
-        FOLog(@"error %@", error);
+        FOLog(FOLogVerbosityErrorsOnly, @"error %@", error);
     
     return responseData;
 }
 
 - (void) postWebRequest: (NSURL *)theUrl withData: (NSData *)data usingCallback:(void (^)(id))returnedResults {
     
-    FOLog(@"Posting request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Posting request to %@", theUrl);
     
     self.storedBlock = returnedResults;
     
@@ -111,7 +111,7 @@
 
 - (id) makeWebRequest: (NSURL *)theUrl {
 	
-    FOLog(@"Making request to %@", theUrl);
+    FOLog(FOLogVerbosityEveryStep, @"Making request to %@", theUrl);
     
 	// Create the request 
 	NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:theUrl];
@@ -122,11 +122,11 @@
                                          returningResponse:&response
                                                      error:&error];
 	if (error) {
-        FOLog(@"Error occurred :: %@", error);
+        FOLog(FOLogVerbosityErrorsOnly, @"Error occurred :: %@", error);
     }
     else {
         NSString *responseBody = [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding];
-        FOLog(@"Web Request Response :: %@", responseBody);
+        FOLog(FOLogVerbosityEveryStep, @"Web Request Response :: %@", responseBody);
         [responseBody release];
         
     }

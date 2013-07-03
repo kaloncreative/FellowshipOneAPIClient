@@ -8,6 +8,7 @@
 
 #import "NSObject+serializeToXml.h"
 #import "objc/runtime.h"
+#import "ConsoleLog.h"
 
 @interface NSObject (private)
 
@@ -101,7 +102,7 @@
 	
 	[xmlReturnString appendFormat:@"</%@>", className];
 	
-	FOLog(@"XML Serialized %@", xmlReturnString);
+	FOLog(FOLogVerbosityEveryStep, @"XML Serialized %@", xmlReturnString);
 	
 	return xmlReturnString;
 }

@@ -51,7 +51,6 @@
 		return [NSString stringWithFormat:@"%@", [FellowshipOneAPIDateUtility stringFromDate:value withDateFormat:@"yyyy-MM-dd'T'HH:mm:ss"]];
 	}
 	else if ([value isKindOfClass:[NSNumber class]]) {
-		//FOLog(@"%d", [value integerValue]);
 		if ([value integerValue] == 1 || [value integerValue] == 0) {
 			if ([fieldName isEqualToString:@"myId"]) {
                 if([value integerValue] == 0){
@@ -208,7 +207,7 @@
 	
 	if (!child) {
 		[jsonReturnString appendString:@"}"];
-        FOLog(@"Serialized JSON: %@", jsonReturnString);
+        FOLog(FOLogVerbosityEveryStep, @"Serialized JSON: %@", jsonReturnString);
 	}
 	
 	return jsonReturnString;

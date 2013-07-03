@@ -29,6 +29,7 @@
 
 #import "NSString+FellowshipOneAPIClientSBJSON.h"
 #import "FellowshipOneAPIClientSBJsonParser.h"
+#import "ConsoleLog.h"
 
 static const FellowshipOneAPIClientSBJsonParser *jsonParser;
 
@@ -43,7 +44,7 @@ static const FellowshipOneAPIClientSBJsonParser *jsonParser;
     if (repr)
         return repr;
     
-    FOLog(@"-JSONFragmentValue failed. Error trace is: %@", [jsonParser errorTrace]);
+    FOLog(FOLogVerbosityErrorsOnly, @"-JSONFragmentValue failed. Error trace is: %@", [jsonParser errorTrace]);
     return nil;
 }
 
@@ -56,7 +57,7 @@ static const FellowshipOneAPIClientSBJsonParser *jsonParser;
     if (repr)
         return repr;
     
-    FOLog(@"-JSONValue failed. Error trace is: %@", [jsonParser errorTrace]);
+    FOLog(FOLogVerbosityErrorsOnly, @"-JSONValue failed. Error trace is: %@", [jsonParser errorTrace]);
     return nil;
 }
 

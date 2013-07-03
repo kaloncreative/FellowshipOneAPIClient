@@ -124,7 +124,6 @@ typedef enum {
 @property (nonatomic, retain)   NSArray *communications;
 @property (nonatomic, assign)   BOOL isAuthorized;
 @property (nonatomic, assign, readonly)   NSDictionary *occupation;
-@property (nonatomic, assign, readonly)   NSString *employer;
 //@property (nonatomic, assign, readonly)   NSDictionary *occupation;
 
 /* maps the properties in this class to the required properties and order from an API request.

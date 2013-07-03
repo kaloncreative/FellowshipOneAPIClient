@@ -114,7 +114,7 @@
 				[people addObject:[FOPerson populateFromDictionary:result]];	
 			}
 			
-			FOLog(@"Household Individual: %@", personResult);
+			FOLog(FOLogVerbosityEveryStep, @"Household Individual: %@", personResult);
 		}
 		
 		self.allMembers = people;

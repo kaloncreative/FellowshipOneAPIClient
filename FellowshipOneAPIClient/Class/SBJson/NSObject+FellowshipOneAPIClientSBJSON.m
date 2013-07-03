@@ -29,6 +29,7 @@
 
 #import "NSObject+FellowshipOneAPIClientSBJSON.h"
 #import "FellowshipOneAPIClientSBJsonWriter.h"
+#import "ConsoleLog.h"
 
 static const FellowshipOneAPIClientSBJsonWriter *jsonWriter;
 
@@ -42,7 +43,7 @@ static const FellowshipOneAPIClientSBJsonWriter *jsonWriter;
     if (json)
         return json;
 
-    FOLog(@"-JSONFragment failed. Error trace is: %@", [jsonWriter errorTrace]);
+    FOLog(FOLogVerbosityErrorsOnly, @"-JSONFragment failed. Error trace is: %@", [jsonWriter errorTrace]);
     return nil;
 }
 
@@ -54,7 +55,7 @@ static const FellowshipOneAPIClientSBJsonWriter *jsonWriter;
     if (json)
         return json;
     
-    FOLog(@"-JSONRepresentation failed. Error trace is: %@", [jsonWriter errorTrace]);
+    FOLog(FOLogVerbosityErrorsOnly, @"-JSONRepresentation failed. Error trace is: %@", [jsonWriter errorTrace]);
     return nil;
 }
 

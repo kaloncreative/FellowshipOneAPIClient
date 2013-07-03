@@ -27,7 +27,7 @@
 #import "OAMutableURLRequest.h"
 #import "NSMutableURLRequest+Parameters.h"
 #import "NSString+URLEncoding.h"
-
+#import "ConsoleLog.h"
 
 @interface OAMutableURLRequest (Private)
 - (void)_generateTimestamp;
@@ -133,8 +133,8 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 
 - (void)prepare 
 {
-    FOLog(@"Consumer secret %@", [consumer.secret URLEncodedString]);
-    FOLog(@"Token secret %@", token.secret);
+    FOLog(FOLogVerbosityEveryStep, @"Consumer secret %@", [consumer.secret URLEncodedString]);
+    FOLog(FOLogVerbosityEveryStep, @"Token secret %@", token.secret);
     
     // sign
     // Secrets must be urlencoded before concatenated with '&'
@@ -159,7 +159,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
                              timestamp,
                              nonce];
 	
-	FOLog(@"Authorization Header: %@", oauthHeader);
+	FOLog(FOLogVerbosityEveryStep, @"Authorization Header: %@", oauthHeader);
 	
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
 }
@@ -213,7 +213,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 					 [[[self URL] URLStringWithoutQuery] URLEncodedString],
 					 [normalizedRequestParameters URLEncodedString]];
 	
-	FOLog(@"Raw Signature: %@", ret);
+	FOLog(FOLogVerbosityEveryStep, @"Raw Signature: %@", ret);
 	
 	return ret;
 }
