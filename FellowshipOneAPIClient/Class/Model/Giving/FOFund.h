@@ -20,6 +20,7 @@
     BOOL isActive;
     NSDate *createdDate;
     NSDate *lastUpdatedDate;
+    NSDictionary *_serializationMapper;
 }
 
 @property (nonatomic, copy) NSString *url;
@@ -31,6 +32,10 @@
 @property (nonatomic, retain)	FOFundType *fundType;
 @property (nonatomic, retain)	NSDate *createdDate;
 @property (nonatomic, retain)	NSDate *lastUpdatedDate;
+
+/* maps the properties in this class to the required properties and order from an API request.
+ This is needed for when the object is saved since the xsd requires a certain order for all fields */
+@property (nonatomic, readonly, assign) NSDictionary *serializationMapper;
 
 - (id)initWithDictionary:(NSDictionary *)dict;
 + (FOFund *)populateFromDictionary:(NSDictionary *)dict;

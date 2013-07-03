@@ -21,6 +21,8 @@
 #import "NSString+URLEncoding.h"
 #import "NSObject+serializeToJSON.h"
 #import <objc/runtime.h>
+#import "FOParentNamedObject.h"
+#import "FOParentObject.h"
 
 @interface FOContributionReceipt (PRIVATE)
 
@@ -49,6 +51,82 @@
 @synthesize contributionType;
 @synthesize person;
 @synthesize household;
+
+- (NSDictionary *)serializationMapper {
+	
+	if (!_serializationMapper) {
+		
+		NSMutableDictionary *mapper = [[NSMutableDictionary alloc] init];
+		NSMutableDictionary *attributeKeys = [[NSMutableDictionary alloc] init];
+		NSArray *attributeOrder = [[NSArray alloc] initWithObjects:@"myId", @"url", nil];
+		
+		[mapper setObject:attributeOrder forKey:@"attributeOrder"];
+		[attributeOrder release];
+		
+		[attributeKeys setValue:@"@uri" forKey:@"url"];
+		[attributeKeys setValue:@"@id" forKey:@"myId"];
+		
+		[mapper setObject:attributeKeys forKey:@"attributes"];
+		[attributeKeys release];
+		
+		NSArray *fieldOrder = [[NSArray alloc] initWithObjects:@"accountReference", @"amount", @"fund", @"subFund", @"pledgeDrive", @"householdSerialized", @"personSerialized", @"account", @"referenceImage", @"batch", @"activityInstance", @"contributionType", @"contributionSubType", @"receivedDate", @"transmitDate", @"returnDate", @"retransmitDate", @"glPostDate", @"isSplit", @"addressVerification", @"memo", @"statedValue", @"trueValue", @"thank", @"thankedDate", @"isMatched", @"createdDate", @"createdByPerson", @"lastUpdatedDate", @"lastUpdatedByPerson", nil];
+		[mapper setObject:fieldOrder forKey:@"fieldOrder"];
+		[fieldOrder release];
+		
+		[mapper setValue:@"household" forKey:@"householdSerialized"];
+        [mapper setValue:@"person" forKey:@"personSerialized"];
+		
+		_serializationMapper = [[NSDictionary alloc] initWithDictionary:mapper];
+		[mapper release];
+	}
+	
+	return _serializationMapper;
+}
+
+// Used for saving receipt
+- (FOParentObject *)personSerialized
+{
+    if(self.person == nil){
+        return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"@id", @"", @"@uri", nil]];
+    }
+    
+    return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:self.person.myId], @"@id", self.person.url, @"@uri", nil]];
+}
+
+// Used for saving receipt
+- (FOParentObject *)householdSerialized
+{
+    if(self.household == nil){
+        return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"@id", @"", @"@uri", nil]];
+    }
+    
+    return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:self.household.myId], @"@id", self.household.url, @"@uri", nil]];
+}
+
+- (id)valueForUndefinedKey:(NSString *)key
+{
+    // Defaults for serializationMapper for properties that are not yet implemented
+    if([key isEqualToString:@"subFund"] ||
+       [key isEqualToString:@"pledgeDrive"] ||
+       [key isEqualToString:@"batch"] ||
+       [key isEqualToString:@"contributionSubType"]){
+        return [FOParentNamedObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"@id", @"", @"@uri", nil]];
+    }
+    else if([key isEqualToString:@"account"] ||
+            [key isEqualToString:@"referenceImage"] ||
+            [key isEqualToString:@"activityInstance"] ||
+            [key isEqualToString:@"createdByPerson"] ||
+            [key isEqualToString:@"lastUpdatedByPerson"]){
+        return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:@"", @"@id", @"", @"@uri", nil]];
+    }
+    else if([key isEqualToString:@"addressVerification"] ||
+            [key isEqualToString:@"isSplit"] ||
+            [key isEqualToString:@"thank"]){
+        return [NSNumber numberWithBool:NO];
+    }
+            
+    return @"";
+}
 
 #pragma mark -
 #pragma mark PRIVATE populate methods
@@ -353,6 +431,7 @@
     [contributionType release];
     [person release];
     [household release];
+    [_serializationMapper release];
     [super dealloc];
 }
 

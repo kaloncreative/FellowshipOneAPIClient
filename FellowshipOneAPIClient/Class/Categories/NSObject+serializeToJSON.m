@@ -179,7 +179,7 @@
 //			if ([[self valueForKey:fieldName] isKindOfClass:[FOParentObject class]] ||
 //				[[self valueForKey:fieldName] isKindOfClass:[FOParentNamedObject class]]) {
             if ([className rangeOfString:objectNamePrefix].length > 0) {
-                [jsonReturnString appendString:[[self valueForKey:fieldName] serializeToJSON:fieldName isChild:YES]];
+                [jsonReturnString appendString:[[self valueForKey:fieldName] serializeToJSON:field isChild:YES]];
 			}
             else if([[self valueForKey:fieldName] isKindOfClass:[NSDictionary class]]){
                 NSDictionary *dict = [self valueForKey:fieldName];

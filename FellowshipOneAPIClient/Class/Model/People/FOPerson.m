@@ -55,6 +55,8 @@
 @synthesize communications;
 @synthesize isAuthorized;
 
+#pragma mark - Save JSON Serialization Helpers
+
 - (NSDictionary *)serializationMapper {
 	
 	if (!_serializationMapper) {
@@ -86,18 +88,10 @@
 	return _serializationMapper;
 }
 
-#pragma mark Additional Properties
-
 // NOT IMPLEMENTED Placeholder for save
 - (NSDictionary *)occupation
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"name", @"", @"description", nil];
-}
-
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)employer
-{
-    return @"";
 }
 
 // NOT IMPLEMENTED Placeholder for save
@@ -113,57 +107,17 @@
 }
 
 // NOT IMPLEMENTED Placeholder for save
-- (NSString *)formerChurch
-{
-    return @"";
-}
-
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)barCode
-{
-    return @"";
-}
-
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)memberEnvelopeCode
-{
-    return @"";
-}
-
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)defaultTagComment
-{
-    return @"";
-}
-
-// NOT IMPLEMENTED Placeholder for save
 - (NSDictionary *)weblink
 {
     return [NSDictionary dictionaryWithObjectsAndKeys:@"", @"userID", @"", @"passwordHint", @"", @"passwordAnswer", nil];
 }
 
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)solicit
+- (id)valueForUndefinedKey:(NSString *)key
 {
     return @"";
 }
 
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)thank
-{
-    return @"";
-}
-
-// NOT IMPLEMENTED Placeholder for save
-- (NSString *)lastMatchDate
-{
-    return @"";
-}
-
-//- (id)valueForUndefinedKey:(NSString *)key
-//{
-//    
-//}
+#pragma mark Additional Properties
 
 - (NSString *)casualName {
 	NSMutableString *name;
@@ -171,12 +125,16 @@
 	if (self.goesByName != nil) {
 		name = [NSMutableString stringWithString:self.goesByName];
 	}
-	else {
+	else if (self.firstName != nil){
 		name = [NSMutableString stringWithString:self.firstName];
-	}
+	}else {
+        name = [NSMutableString new];
+    }
 	
-	[name appendString:@" "];
-	[name appendString:self.lastName];
+    if(self.lastName != nil){
+        [name appendString:@" "];
+        [name appendString:self.lastName];
+    }
 	
 	if (self.suffix != nil) {
 		[name appendString:@", "];
