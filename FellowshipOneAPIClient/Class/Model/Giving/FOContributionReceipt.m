@@ -69,12 +69,13 @@
 		[mapper setObject:attributeKeys forKey:@"attributes"];
 		[attributeKeys release];
 		
-		NSArray *fieldOrder = [[NSArray alloc] initWithObjects:@"accountReference", @"amount", @"fund", @"subFund", @"pledgeDrive", @"householdSerialized", @"personSerialized", @"account", @"referenceImage", @"batch", @"activityInstance", @"contributionType", @"contributionSubType", @"receivedDate", @"transmitDate", @"returnDate", @"retransmitDate", @"glPostDate", @"isSplit", @"addressVerification", @"memo", @"statedValue", @"trueValue", @"thank", @"thankedDate", @"isMatched", @"createdDate", @"createdByPerson", @"lastUpdatedDate", @"lastUpdatedByPerson", nil];
+		NSArray *fieldOrder = [[NSArray alloc] initWithObjects:@"accountReference", @"amountSerialized", @"fund", @"subFund", @"pledgeDrive", @"householdSerialized", @"personSerialized", @"account", @"referenceImage", @"batch", @"activityInstance", @"contributionType", @"contributionSubType", @"receivedDate", @"transmitDate", @"returnDate", @"retransmitDate", @"glPostDate", @"isSplit", @"addressVerification", @"memo", @"statedValue", @"trueValue", @"thank", @"thankedDate", @"isMatched", @"createdDate", @"createdByPerson", @"lastUpdatedDate", @"lastUpdatedByPerson", nil];
 		[mapper setObject:fieldOrder forKey:@"fieldOrder"];
 		[fieldOrder release];
 		
 		[mapper setValue:@"household" forKey:@"householdSerialized"];
         [mapper setValue:@"person" forKey:@"personSerialized"];
+        [mapper setValue:@"amount" forKey:@"amountSerialized"];
 		
 		_serializationMapper = [[NSDictionary alloc] initWithDictionary:mapper];
 		[mapper release];
@@ -101,6 +102,26 @@
     }
     
     return [FOParentObject populateFromDictionary:[NSDictionary dictionaryWithObjectsAndKeys:[NSNumber numberWithInteger:self.household.myId], @"@id", self.household.url, @"@uri", nil]];
+}
+
+// Used for saving receipt
+- (NSString *)amountSerialized
+{
+    if(self.amount == nil){
+        return nil;
+    }
+
+    NSNumberFormatter *numberFormatter = [[NSNumberFormatter alloc] init];
+    [numberFormatter setNumberStyle:NSNumberFormatterDecimalStyle];
+    [numberFormatter setMinimumFractionDigits:2];
+    [numberFormatter setMaximumFractionDigits:2];
+    [numberFormatter setGroupingSeparator:@""];
+    
+    NSString *numberAsString = [NSString stringWithString:[numberFormatter stringFromNumber:self.amount]];
+    
+    [numberFormatter release];
+    
+    return numberAsString;
 }
 
 - (id)valueForUndefinedKey:(NSString *)key
