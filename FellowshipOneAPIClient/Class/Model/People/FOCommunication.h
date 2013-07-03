@@ -109,10 +109,10 @@
 + (NSArray *) getByHouseholdID: (NSInteger) householdID;
 
 /* Calls the API to save the current communication. If there is an ID attached to the communication, the method assumes an update, if no id exists, the method assumes create */
-- (void) save;
+- (BOOL) save:(NSError **)error;
 
 /* Calls the API to save the current communication. If there is an ID attached to the communication, the method assumes an update, if no id exists, the method assumes create */
-- (void) saveUsingCallback:(void (^)(FOCommunication *))returnCommunication;
+- (void) saveUsingCallback:(void (^)(FOCommunication *))returnCommunication error:(void (^)(NSError *))errorBlock;
 
 /* Gets an FT Communication from the F1 API based on the provided address id -- This method is performed synchronously -- */
 + (FOCommunication *) getByCommunicationID: (NSInteger) communicationID;
