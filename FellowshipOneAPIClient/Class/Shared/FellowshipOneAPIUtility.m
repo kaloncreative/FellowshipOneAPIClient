@@ -145,7 +145,7 @@
 + (NSString *) SqlSafeParam: (id)value {
 
 	if ([value isKindOfClass:[NSNumber class]]) {
-		NSLog(@"SQLSafeParam integer: %d", [value integerValue]);
+		FOLog(@"SQLSafeParam integer: %d", [value integerValue]);
 		return [NSString stringWithFormat:@"%d", [value integerValue]];
 	}
 	else if ([value isKindOfClass:[NSDate class]]) {
@@ -168,7 +168,7 @@
 	if ([sqliteDB open:[DatabaseUtility getDatabasePath]]) {
 		
 		SQLResults = [sqliteDB executeQuery:query];
-		NSLog(@"Returned results:%@", SQLResults);
+		FOLog(@"Returned results:%@", SQLResults);
 		
 		
 		[sqliteDB close];

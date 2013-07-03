@@ -5,3 +5,9 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
+
+#ifdef FO_LOGGING_ENABLED
+    #define FOLog(...) NSLog(@"%s %@", __PRETTY_FUNCTION__, [NSString stringWithFormat:__VA_ARGS__])
+#else
+    #define FOLog(...) do { } while (0)
+#endif

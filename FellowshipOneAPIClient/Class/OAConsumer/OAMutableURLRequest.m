@@ -133,11 +133,11 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 
 - (void)prepare 
 {
+    FOLog(@"Consumer secret %@", [consumer.secret URLEncodedString]);
+    FOLog(@"Token secret %@", token.secret);
     
-    NSLog(@"%@", [consumer.secret URLEncodedString]);
-    NSLog(@"%@", token.secret);
-      // sign
-     // Secrets must be urlencoded before concatenated with '&'
+    // sign
+    // Secrets must be urlencoded before concatenated with '&'
     // TODO: if later RSA-SHA1 support is added then a little code redesign is needed
     signature = [signatureProvider signClearText:[self _signatureBaseString]
                                       withSecret:[NSString stringWithFormat:@"%@&%@",
@@ -159,7 +159,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
                              timestamp,
                              nonce];
 	
-	NSLog(@"Authorization Header: %@", oauthHeader);
+	FOLog(@"Authorization Header: %@", oauthHeader);
 	
     [self setValue:oauthHeader forHTTPHeaderField:@"Authorization"];
 }
@@ -213,7 +213,7 @@ signatureProvider:(id<OASignatureProviding, NSObject>)aProvider
 					 [[[self URL] URLStringWithoutQuery] URLEncodedString],
 					 [normalizedRequestParameters URLEncodedString]];
 	
-	NSLog(@"Raw Signature: %@", ret);
+	FOLog(@"Raw Signature: %@", ret);
 	
 	return ret;
 }

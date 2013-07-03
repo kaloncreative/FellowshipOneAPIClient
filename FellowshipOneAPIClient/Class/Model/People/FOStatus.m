@@ -74,9 +74,12 @@
 			self.subStatus = [[[FOSubStatus alloc] initWithDictionary:[dict objectForKey:@"subStatus"]] autorelease];
 		}
 		else {
-			self.subStatus = nil; 
+			self.subStatus = [[FOSubStatus alloc] init]; 
 		}
 	}
+    else {
+        self.subStatus = [[FOSubStatus alloc] init];
+    }
 	
 	return self;
 }

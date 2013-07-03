@@ -13,7 +13,7 @@
 
 + (void) LogMessage:(NSString *)message {
 
-	NSLog(@"FT API Framework :: %@", message);
+	FOLog(@"FT API Framework :: %@", message);
 }
 
 @end

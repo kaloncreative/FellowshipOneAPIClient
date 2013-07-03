@@ -125,9 +125,9 @@
 - (void)connectionDidFinishLoading:(NSURLConnection *)aConnection
 {
 	
-	NSLog(@"HTTP Response Status Code: %d", [(NSHTTPURLResponse *)response statusCode]);
-	NSLog(@"HTTP Response Status Description: %@", [NSHTTPURLResponse localizedStringForStatusCode:[(NSHTTPURLResponse *)response statusCode]]);
-	NSLog(@"HTTP Response Headers: %@", [(NSHTTPURLResponse *)response allHeaderFields]);
+	FOLog(@"HTTP Response Status Code: %d", [(NSHTTPURLResponse *)response statusCode]);
+	FOLog(@"HTTP Response Status Description: %@", [NSHTTPURLResponse localizedStringForStatusCode:[(NSHTTPURLResponse *)response statusCode]]);
+	FOLog(@"HTTP Response Headers: %@", [(NSHTTPURLResponse *)response allHeaderFields]);
 	
 	OAServiceTicket *ticket = [[OAServiceTicket alloc] initWithRequest:request
 						response:response

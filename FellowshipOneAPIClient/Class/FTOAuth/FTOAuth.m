@@ -275,12 +275,10 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 }
 
 - (void) requestTokenSucceed: (OAServiceTicket *)ticket withData:(NSData *)data {
-	
-	NSLog(@"request token response");
-	
+		
 	NSString *stringData = [[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease];
 	
-	NSLog(@" %@", stringData);
+	FOLog(@"request token response %@", stringData);
 	
 	[parentDelegate performSelector: didFinishSelector
 						 withObject: stringData];
@@ -294,7 +292,7 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 	// Convert the string into a NSURL
 	NSURL *url = [NSURL URLWithString: [baseURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 	
-	NSLog(@"FT API URL: %@", baseURL);
+	FOLog(@"FT API URL: %@", baseURL);
 
 	return url;
 	
@@ -609,10 +607,9 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 
 - (void) callFTAPIDidFail: (OAServiceTicket *)ticket withData:(NSData *)data {
 	
-	NSLog(@"fail");
-	NSLog(@"fail data %@", data);
+	FOLog(@"fail data %@", data);
 	// Write out the response headers
-	NSLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
+	FOLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
 	
 	// Build a an FTOauthResult for the current object
 	FTOAuthResult *oauthResult = [[FTOAuthResult alloc] init];
@@ -666,11 +663,9 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 		}
 	}
 	else {
-		
-		NSLog(@"fail");
-		NSLog(@"fail data %@", data);
+		FOLog(@"fail data %@", data);
 		// Write out the response headers
-		NSLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
+		FOLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
 	}
 	
 	if ([self.delegate respondsToSelector:@selector(ftOauth: didComplete:)]) {
@@ -685,10 +680,8 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 
 - (void) callSyncFTAPIDidFail: (OAServiceTicket *)ticket withData:(NSData *)data {
 	
-	NSLog(@"fail");
-	
 	// Write out the response headers
-	NSLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
+	FOLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);
 	
 	// Build a an FTOauthResult for the current object
 	FTOAuthResult *oauthResult = [[FTOAuthResult alloc] init];
@@ -703,7 +696,7 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 
 - (void) accessTokenSucceed: (OAServiceTicket *)ticket withData:(NSData *)data {
 	
-	NSLog(@"F1 API Access Token success message :: %@", data);
+	FOLog(@"F1 API Access Token success message %@", data);
 	
 	// Build a an FTOauthResult for the current object
 	FTOAuthResult *oauthResult = [[FTOAuthResult alloc] init];
@@ -763,10 +756,10 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 - (void) accessTokenFail: (OAServiceTicket *)ticket withData:(NSError *)data {
 	
 	// Write out the response headers
-	NSLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);	
+	FOLog(@"Fail Response Headers %@", [(NSHTTPURLResponse *)ticket.response allHeaderFields]);	
 	
 	// Write out reason it failed
-	NSLog(@"Error Message: %@", data);
+	FOLog(@"Error Message: %@", data);
 	
 	// Build a an FTOauthResult for the current object
 	FTOAuthResult *oauthResult = [[FTOAuthResult alloc] init];

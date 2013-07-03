@@ -114,7 +114,7 @@
 				[people addObject:[FOPerson populateFromDictionary:result]];	
 			}
 			
-			NSLog(@"Household Individual: %@", personResult);
+			FOLog(@"Household Individual: %@", personResult);
 		}
 		
 		self.allMembers = people;

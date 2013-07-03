@@ -43,7 +43,7 @@ static const FellowshipOneAPIClientSBJsonParser *jsonParser;
     if (repr)
         return repr;
     
-    NSLog(@"-JSONFragmentValue failed. Error trace is: %@", [jsonParser errorTrace]);
+    FOLog(@"-JSONFragmentValue failed. Error trace is: %@", [jsonParser errorTrace]);
     return nil;
 }
 
@@ -56,7 +56,7 @@ static const FellowshipOneAPIClientSBJsonParser *jsonParser;
     if (repr)
         return repr;
     
-    NSLog(@"-JSONValue failed. Error trace is: %@", [jsonParser errorTrace]);
+    FOLog(@"-JSONValue failed. Error trace is: %@", [jsonParser errorTrace]);
     return nil;
 }
 

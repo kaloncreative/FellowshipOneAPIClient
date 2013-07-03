@@ -41,7 +41,7 @@
 - (NSString *) serializeToXml {
 	
 	// The prefix for all class names that needs to be stripped
-	NSString *objectNamePrefix = [NSString stringWithString:@"FO"];
+	NSString *objectNamePrefix = @"FO";
 	
 	NSMutableString *className = [NSMutableString stringWithFormat:@"%@", [self class]];
 	
@@ -101,7 +101,7 @@
 	
 	[xmlReturnString appendFormat:@"</%@>", className];
 	
-	NSLog(@"%@", xmlReturnString);
+	FOLog(@"XML Serialized %@", xmlReturnString);
 	
 	return xmlReturnString;
 }

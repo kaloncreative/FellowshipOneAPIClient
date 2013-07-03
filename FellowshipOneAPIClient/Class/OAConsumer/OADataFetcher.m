@@ -44,8 +44,6 @@
     responseData = [NSURLConnection sendSynchronousRequest:request
                                          returningResponse:&response
                                                      error:&error];
-
-    //NSLog(@"Request %@ status %d data %@ error %@", request, [(NSHTTPURLResponse *)response statusCode], [[NSString alloc] initWithData:responseData encoding:NSUTF8StringEncoding], error);
     
     if (response == nil || responseData == nil || error != nil) {
         OAServiceTicket *ticket= [[OAServiceTicket alloc] initWithRequest:request
