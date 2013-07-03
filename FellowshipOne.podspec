@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
   s.name         = "FellowshipOne"
-  s.version      = "1.1.0"
+  s.version      = "1.1.1"
   s.summary      = "A Cocoa Touch library for consuming the Fellowship One API"
   s.homepage     = "https://github.com/kaloncreative/FellowshipOneAPIClient"
 
@@ -12,7 +12,7 @@ Pod::Spec.new do |s|
 
   s.authors      = { "Chad Meyer" => "chadmeyer@me.com", "Austin Grigg" => "austin@kaloncreative.com" }
 
-  s.source       = { :git => "https://github.com/kaloncreative/FellowshipOneAPIClient.git", :tag => "1.1.0" }
+  s.source       = { :git => "https://github.com/kaloncreative/FellowshipOneAPIClient.git", :tag => "1.1.1" }
 
   s.platform     = :ios, '5.0'
 
@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
 
   s.public_header_files = 'FellowshipOneAPIClient/**/*.h'
 
-  spec.prefix_header_file = 'FellowshipOneAPIClient/FellowshipOneAPIClient-Prefix.pch'
+  s.prefix_header_file = 'FellowshipOneAPIClient/FellowshipOneAPIClient-Prefix.pch'
 
   s.requires_arc = false
 end
