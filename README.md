@@ -28,6 +28,20 @@ Libs
 
 * none
 
+Logging
+-------------------------
+
+To see logging from library, call the following method before making any API calls
+
+[ConsoleLog setVerbosity:FOLogVerbosityEveryStep];
+
+Possible options:
+
+* FOLogVerbosityNoLogging // Default 
+* FOLogVerbosityErrorsOnly
+* FOLogVerbosityErrorsAndWarnings
+* FOLogVerbosityEveryStep // Wall of text
+
 Tunes
 -------------------------
 
