@@ -586,7 +586,9 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 			NSString *responseBody = [[[NSString alloc] initWithData:data
 							encoding:NSUTF8StringEncoding] autorelease];
 
-			self.ftOAuthResult.returnData = [responseBody JSONValue];
+            if(responseBody && responseBody.length > 0){
+                self.ftOAuthResult.returnData = [responseBody JSONValue];
+            }
 			
 			[parser release];
 		}

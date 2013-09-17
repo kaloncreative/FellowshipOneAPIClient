@@ -145,12 +145,11 @@
 				[jsonReturnString appendFormat:@","];
 			}
 		}
+        
+        [jsonReturnString appendString:@","];
 	}
 	
 	if (hasFields) {
-		
-		// Add a comman every object has attributes
-		[jsonReturnString appendString:@","];
 		
 		// For each object in the dictionary that is not the attributes, add the value
 		NSArray *fieldOrder = [serializationMapper objectForKey:@"fieldOrder"];
