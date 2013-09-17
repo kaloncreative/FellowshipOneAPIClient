@@ -656,7 +656,9 @@ int encode(unsigned s_len, char *src, unsigned d_len, char *dst);
 			// parse the JSON response into an object
 			// {person:{}} -- Returns as an NSDictionary
 			//NSDictionary *jsonData = [parser objectWithString:responseBody error:nil];
-			oauthResult.returnData = [responseBody JSONValue];
+            if(responseBody && responseBody.length > 0){
+                oauthResult.returnData = [responseBody JSONValue];
+            }
 		
 			[responseBody release];
 		}
