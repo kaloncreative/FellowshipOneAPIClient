@@ -11,6 +11,7 @@
 #import "FOHousehold.h"
 #import "FOContributionType.h"
 #import "FOFund.h"
+#import "FOSubFund.h"
 #import "JSON.h"
 #import "FellowshipOneAPIUtility.h"
 #import "FellowshipOneAPIDateUtility.h"
@@ -48,6 +49,7 @@
 @synthesize createdDate;
 @synthesize lastUpdatedDate;
 @synthesize fund;
+@synthesize subFund;
 @synthesize contributionType;
 @synthesize person;
 @synthesize household;
@@ -195,6 +197,7 @@
     self.lastUpdatedDate = [FellowshipOneAPIUtility convertToFullNSDate:[dict objectForKey:@"lastUpdatedDate"]];
     
     self.fund = [FOFund populateFromDictionary:[dict objectForKey:@"fund"]];
+    self.subFund = [FOSubFund populateFromDictionary:[dict objectForKey:@"subFund"]];
     self.contributionType = [FOContributionType populateFromDictionary:[dict objectForKey:@"contributionType"]];
     self.person = [FOPerson populateFromDictionary:[dict objectForKey:@"person"]];
     self.household = [FOHousehold populateFromDictionary:[dict objectForKey:@"household"]];
@@ -449,6 +452,7 @@
 	[createdDate release];
 	[lastUpdatedDate release];
     [fund release];
+    [subFund release];
     [contributionType release];
     [person release];
     [household release];

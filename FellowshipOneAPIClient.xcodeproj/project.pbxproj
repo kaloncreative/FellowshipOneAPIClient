@@ -15,6 +15,8 @@
 		003309F4177B2F5200E7D4CC /* FOFundType.m in Sources */ = {isa = PBXBuildFile; fileRef = 003309F3177B2F5200E7D4CC /* FOFundType.m */; };
 		003309F6177B303C00E7D4CC /* FOFund.m in Sources */ = {isa = PBXBuildFile; fileRef = 003309F5177B303B00E7D4CC /* FOFund.m */; };
 		003309F8177B304200E7D4CC /* FOFund.h in Headers */ = {isa = PBXBuildFile; fileRef = 003309F7177B304200E7D4CC /* FOFund.h */; };
+		003F10B619506C7F000411B1 /* FOSubFund.h in Headers */ = {isa = PBXBuildFile; fileRef = 003F10B419506C7F000411B1 /* FOSubFund.h */; };
+		003F10B719506C7F000411B1 /* FOSubFund.m in Sources */ = {isa = PBXBuildFile; fileRef = 003F10B519506C7F000411B1 /* FOSubFund.m */; };
 		004F1D11177E119B008214E2 /* FOCommunicationType.h in Headers */ = {isa = PBXBuildFile; fileRef = 004F1D0F177E119B008214E2 /* FOCommunicationType.h */; };
 		004F1D12177E119B008214E2 /* FOCommunicationType.m in Sources */ = {isa = PBXBuildFile; fileRef = 004F1D10177E119B008214E2 /* FOCommunicationType.m */; };
 		00F9C9EC17E89CDF006710F5 /* FOAccount.m in Sources */ = {isa = PBXBuildFile; fileRef = 00F9C9EA17E89CDF006710F5 /* FOAccount.m */; };
@@ -170,6 +172,8 @@
 		003309F3177B2F5200E7D4CC /* FOFundType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FOFundType.m; path = Class/Model/Giving/FOFundType.m; sourceTree = "<group>"; };
 		003309F5177B303B00E7D4CC /* FOFund.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FOFund.m; path = Class/Model/Giving/FOFund.m; sourceTree = "<group>"; };
 		003309F7177B304200E7D4CC /* FOFund.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FOFund.h; path = Class/Model/Giving/FOFund.h; sourceTree = "<group>"; };
+		003F10B419506C7F000411B1 /* FOSubFund.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = FOSubFund.h; path = Class/Model/Giving/FOSubFund.h; sourceTree = "<group>"; };
+		003F10B519506C7F000411B1 /* FOSubFund.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = FOSubFund.m; path = Class/Model/Giving/FOSubFund.m; sourceTree = "<group>"; };
 		004F1D0F177E119B008214E2 /* FOCommunicationType.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FOCommunicationType.h; sourceTree = "<group>"; };
 		004F1D10177E119B008214E2 /* FOCommunicationType.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FOCommunicationType.m; sourceTree = "<group>"; };
 		00F9C9E917E89CDF006710F5 /* FOAccount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FOAccount.h; sourceTree = "<group>"; };
@@ -373,6 +377,8 @@
 				003309EE177B2C3D00E7D4CC /* FOContributionType.m */,
 				003309F7177B304200E7D4CC /* FOFund.h */,
 				003309F5177B303B00E7D4CC /* FOFund.m */,
+				003F10B419506C7F000411B1 /* FOSubFund.h */,
+				003F10B519506C7F000411B1 /* FOSubFund.m */,
 				003309F1177B2F4600E7D4CC /* FOFundType.h */,
 				003309F3177B2F5200E7D4CC /* FOFundType.m */,
 			);
@@ -746,6 +752,7 @@
 				003309F8177B304200E7D4CC /* FOFund.h in Headers */,
 				004F1D11177E119B008214E2 /* FOCommunicationType.h in Headers */,
 				00F9C9EE17E89FE9006710F5 /* FOAccount.h in Headers */,
+				003F10B619506C7F000411B1 /* FOSubFund.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -793,6 +800,8 @@
 /* Begin PBXProject section */
 		FD764C0813D0721000BE0F4F /* Project object */ = {
 			isa = PBXProject;
+			attributes = {
+			};
 			buildConfigurationList = FD764C0B13D0721000BE0F4F /* Build configuration list for PBXProject "FellowshipOneAPIClient" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
@@ -886,6 +895,7 @@
 				FD764CD513D075BE00BE0F4F /* FellowshipOneAPIUtility.m in Sources */,
 				FD764CE513D075C800BE0F4F /* NSObject+FellowshipOneAPIClientSBJSON.m in Sources */,
 				FD764CE713D075C800BE0F4F /* NSString+FellowshipOneAPIClientSBJSON.m in Sources */,
+				003F10B719506C7F000411B1 /* FOSubFund.m in Sources */,
 				FD764CE913D075C800BE0F4F /* FellowshipOneAPIClientSBJSON.m in Sources */,
 				FD764CEB13D075C800BE0F4F /* FellowshipOneAPIClientSBJsonBase.m in Sources */,
 				FD764CED13D075C800BE0F4F /* FellowshipOneAPIClientSBJsonParser.m in Sources */,

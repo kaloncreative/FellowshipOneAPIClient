@@ -16,6 +16,7 @@
 @class FOContributionType;
 @class FOHousehold;
 @class FOPerson;
+@class FOSubFund;
 
 @interface FOContributionReceipt : NSObject <NSCoding> {
     NSInteger myId;
@@ -34,6 +35,7 @@
     NSDate *createdDate;
     NSDate *lastUpdatedDate;
     FOFund *fund;
+    FOSubFund *subFund;
     FOContributionType *contributionType;
     FOPerson *person;
     FOHousehold *household;
@@ -56,6 +58,7 @@
 @property (nonatomic, retain)	NSDate *createdDate; // Set by server
 @property (nonatomic, retain)	NSDate *lastUpdatedDate;
 @property (nonatomic, retain)	FOFund *fund;  // Required
+@property (nonatomic, retain)	FOSubFund *subFund;
 @property (nonatomic, retain)	FOContributionType *contributionType;  // Required
 @property (nonatomic, retain)	FOPerson *person;
 @property (nonatomic, retain)	FOHousehold *household;
