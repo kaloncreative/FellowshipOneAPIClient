@@ -148,7 +148,7 @@
 	
 	if (results.isSucceed) {
 		
-		NSDictionary *topLevel = [results.returnData objectForKey:@"subfunds"];
+		NSDictionary *topLevel = [results.returnData objectForKey:@"subFunds"];
 		if (![topLevel isEqual:[NSNull null]]) {
 			NSArray *subfunds = [topLevel objectForKey:@"subFund"];
 			
